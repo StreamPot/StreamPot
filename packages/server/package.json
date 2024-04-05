@@ -1,0 +1,22 @@
+{
+    "name": "@streampot/server",
+    "scripts": {
+        "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' src/main.ts",
+        "start": "ts-node src/main.ts",
+        "test": "vitest"
+    },
+    "dependencies": {
+        "@fastify/type-provider-typebox": "^4.0.0",
+        "@sinclair/typebox": "^0.32.20",
+        "bull": "^4.12.2",
+        "fastify": "^4.26.2",
+        "fluent-ffmpeg": "^2.1.2",
+        "ts-node": "^10.9.2"
+    },
+    "devDependencies": {
+        "@types/bull": "^4.10.0",
+        "@types/fluent-ffmpeg": "^2.1.24",
+        "nodemon": "^3.1.0",
+        "vitest": "^1.4.0"
+    }
+}

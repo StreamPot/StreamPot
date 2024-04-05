@@ -1,0 +1,12 @@
+{
+    "name": "streampot",
+    "scripts": {
+        "test": "vitest"
+    },
+    "dependencies": {
+        "node-fetch": "^3.3.2"
+    },
+    "devDependencies": {
+        "vitest": "^1.4.0"
+    }
+}
