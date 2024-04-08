@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "StreamPot (alpha)"
+  name: "StreamPot"
   text: "Open Source AWS MediaConvert alternative"
   tagline: "API to easily process videos at scale"
   # image:
