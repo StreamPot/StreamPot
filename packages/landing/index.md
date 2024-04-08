@@ -11,8 +11,11 @@ hero:
   #   alt: VitePress
   actions:
     - theme: brand
+      text: Quickstart
+      link: /getting-started
+    - theme: alt
       text: Examples
-      link: /markdown-examples
+      link: /examples
     # - theme: alt
     #   text: API Examples
     #   link: /api-examples
