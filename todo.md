@@ -12,5 +12,3 @@ Maybe
 - [] Database/semi permenant storage
 - [] Upload to s3
 - [] Docker/docker compose files to easily run/deploy
-
-
