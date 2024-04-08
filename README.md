@@ -31,3 +31,7 @@ StreamPot helps you install and run a nodejs server that has ffmpeg installed an
 It also includes job management/queuing as well as upload/downloads to remote locations.
 
 You will need to self host packages/server to run this and then update the url when initialising the SDK. (Work in progress)
+
+## Acknowledgements
+
+This project is heavily reliant on the amazing work of the ffmpeg and fluent-ffmpeg teams 
