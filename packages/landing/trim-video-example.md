@@ -1,8 +1,8 @@
-# StreamPot examples
+---
+outline: deep
+---
 
-This page demonstrates how to use StreamPot.
 
-## Trim a video
 ```js
 import StreamPot from 'streampot'
 

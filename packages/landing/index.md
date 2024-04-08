@@ -4,26 +4,26 @@ layout: home
 
 hero:
   name: "StreamPot"
-  text: "Easiest way to convert media"
-  tagline: My great project tagline
-  image:
-    src: /logo.svg
-    alt: VitePress
+  text: "Open Source AWS MediaConvert alternative"
+  tagline: "API to easily process videos at scale"
+  # image:
+  #   src: /logo.svg
+  #   alt: VitePress
   actions:
     - theme: brand
-      text: Markdown Examples
+      text: Examples
       link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
+    # - theme: alt
+    #   text: API Examples
+    #   link: /api-examples
 
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Use the ffmpeg commands you're familiar with
+    details: StreamPot exposes the Fluent ffmpeg library
+  - title: No need to worry about scale
+    details: We take care of the scaling
+  - title: Simple, affordable pricing
+    details: We aim to be significantly cheaper than MediaConvert
 ---
 
