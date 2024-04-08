@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "StreamPot 🫖"
   text: "Open Source AWS MediaConvert alternative"
-  tagline: "API to easily process videos at scale"
+  tagline: "Process videos in your app: convert file formats, add watermarks, make clips. And much more."
   # image:
   #   src: /logo.svg
   #   alt: VitePress
