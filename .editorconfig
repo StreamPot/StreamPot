@@ -9,3 +9,6 @@ quote_type = single
 
 [*.md]
 trim_trailing_whitespace = false
+
+[config.mts]
+indent_size = 2
