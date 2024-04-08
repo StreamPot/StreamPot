@@ -50,3 +50,9 @@ runJob()
 StreamPot helps you install and run a nodejs server that has ffmpeg installed and a Fluent ffmpeg-like API to interface with.
 
 It also includes job management/queuing as well as upload/downloads to remote locations.
+
+You will need to self host packages/server to run this and then update the url when initialising the SDK. (Work in progress)
+
+## Managed service
+
+We will also launch a [managed service](https://www.streampot.io/) if you prefer StreamPot handles the infrastructure for you
