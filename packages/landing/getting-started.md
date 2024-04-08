@@ -22,3 +22,14 @@ $ bun add -D streampot
 ```
 
 :::
+
+## Usage
+
+```js
+import StreamPot from 'streampot'
+
+const sp = new StreamPot({
+    secret: 'your-api-key',
+    baseUrl: 'https://localhost:3000', // optionally, if you're self hosting
+});
+```

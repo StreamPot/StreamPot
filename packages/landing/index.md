@@ -24,9 +24,12 @@ hero:
 features:
   - title: Use the ffmpeg commands you're familiar with
     details: StreamPot exposes the Fluent ffmpeg library
-  - title: Self host 
+    icon: 💻
+  - title: Self host
     details: You can self host or use our service
+    icon: 🚀
   - title: Simple, affordable pricing
     details: We aim to be significantly cheaper than MediaConvert
+    icon: 💰
 ---
 
