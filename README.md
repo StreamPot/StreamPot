@@ -2,11 +2,9 @@
 
 *Note: this is in the very early stages of development*
 
-Streampot is a project to that provides scaffolding for transforming media.
+Streampot is a project that provides scaffolding for transforming media (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
 
 We are building this because an increasing number of projects are transforming media as part of their workflow. 
-
-This means you can run commands like:
 
 ```js
 import StreamPot from 'streampot' 
@@ -15,7 +13,6 @@ const EXAMPLE_INPUT_VIDEO = "https://sample-videos.com/video321/mp4/240/big_buck
 const sp = new StreamPot();
 
 async function clipVideo(input, start, end, outputPath) {
-    // Assuming .run() returns a job object
     const job = await sp
         .setInput(input)
         .setStartTime(start)
@@ -38,9 +35,17 @@ async function pollJob(id) {
         await new Promise(resolve => setTimeout(resolve, 5000));
     }
 }
+async function runJob(){
+    const job = await clipVideo(EXAMPLE_INPUT_VIDEO, 10, 20)
+    pollJob(job.id)
+}
+
+runJob()
+
 ```
 
 ## How it works
 
-Streampot helps you install and run a nodejs server that has ffmpeg installed and a Fluent ffmpeg-like API.
+Streampot helps you install and run a nodejs server that has ffmpeg installed and a Fluent ffmpeg-like API to interface with.
+
 It also includes job management/queuing as well as upload/downloads to remote locations. 
