@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "StreamPot"
+  name: "StreamPot 🫖"
   text: "Open Source AWS MediaConvert alternative"
   tagline: "API to easily process videos at scale"
   # image:
@@ -26,10 +26,10 @@ features:
     details: StreamPot exposes the Fluent ffmpeg library
     icon: 💻
   - title: Self host
-    details: You can self host or use our service
+    details: You can self host or use our service if you think it's worth it.
     icon: 🚀
   - title: Simple, affordable pricing
-    details: We aim to be significantly cheaper than MediaConvert
+    details: We aim to be significantly cheaper than MediaConvert. 
     icon: 💰
 ---
 

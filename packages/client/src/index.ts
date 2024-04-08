@@ -29,6 +29,16 @@ export class StreamPot {
         return this
     }
 
+    async checkStatus(jobId: string) {
+        try {
+            const res = await fetch(`${this.baseUrl}/jobs/${jobId}`)
+            const data = await res.json()
+            return data
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     async run() {
         if (!this.inputUrl) {
             throw new Error('Input URL is required')
@@ -42,7 +52,7 @@ export class StreamPot {
             throw new Error('End time is required')
         }
 
-        const response = await fetch(`${this.baseUrl}/clip`, {
+        const response = await fetch(`${this.baseUrl} /clip`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

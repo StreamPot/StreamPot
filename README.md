@@ -6,44 +6,23 @@ StreamPot is a project that provides scaffolding for transforming media (e.g. tr
 
 We are building this because an increasing number of projects are transforming media as part of their workflow. 
 
+If you want a no-setup way to run this, check out [StreamPot](https://www.streampot.io/)
+
 ```js
 import StreamPot from 'streampot'
 
-const EXAMPLE_INPUT_VIDEO = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4";
+const sp = new StreamPot({
+    secret:"test"
+});
 
-const sp = new StreamPot();
-
-async function clipVideo(input, start, end) {
-    const job = await sp
-        .input(input)
-        .startAt(start)
-        .endAt(end)
-        .run();
-    return job;
-}
-
-async function pollJob(id) {
-    while (true) {
-        const submittedJob = await sp.checkJob(id);
-        if (submittedJob.status === 'complete') {
-            console.log('URL of clipped video is:', submittedJob.output_url);
-            break;
-        } else if (submittedJob.status === 'failed') {
-            console.log('Job failed');
-            break;
-        }
-        await new Promise(resolve => setTimeout(resolve, 5000));
-    }
-}
-
-async function runJob() {
-    const job = await clipVideo(EXAMPLE_INPUT_VIDEO, 10, 20)
-    pollJob(job.id)
-}
-
-runJob()
+sp
+    .input(inputUrl)
+    .startAt(startTime)
+    .endAt(endTime)
+    .run();
 
 ```
+Check out a [full example here](https://www.streampot.io/examples.html)
 
 ## How it works
 
@@ -52,7 +31,3 @@ StreamPot helps you install and run a nodejs server that has ffmpeg installed an
 It also includes job management/queuing as well as upload/downloads to remote locations.
 
 You will need to self host packages/server to run this and then update the url when initialising the SDK. (Work in progress)
-
-## Managed service
-
-We will also launch a [managed service](https://www.streampot.io/) if you prefer StreamPot handles the infrastructure for you

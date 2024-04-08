@@ -8,7 +8,9 @@ import StreamPot from 'streampot'
 
 const EXAMPLE_INPUT_VIDEO = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4";
 
-const sp = new StreamPot();
+const sp = new StreamPot({
+    secret:"test"
+});
 
 async function clipVideo(input, start, end) {
     const job = await sp
@@ -40,3 +42,11 @@ async function runJob() {
 
 runJob()
 ```
+
+## How to run the server locally
+
+1. ```git clone https://github.com/jackbridger/streampot```
+2. ```cd packages/server && npm i && npm run dev``` 
+3. Now use the example code as a base to submit jobs
+
+If you have questions, please feel free to [open an issue in our repo](https://github.com/jackbridger/streampot/issues/new)
