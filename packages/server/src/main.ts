@@ -1,8 +1,12 @@
 import Fastify, { FastifyRequest } from 'fastify'
+import dotenv from 'dotenv'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
 import { VideoTrim, type VideoTrimType } from './types'
-import db from './db'
+import { connectToDB } from './db/db'
+import { addJob, getJob } from './db/jobs'
+
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = Fastify({
     logger: true
@@ -25,12 +29,8 @@ app.post<{ Body: VideoTrimType }>('/clip', {
         start_ms: request.body.start_ms,
         end_ms: request.body.end_ms
     })
-    db.jobs.set(job.id, {
-        status: 'pending',
-        source_url: request.body.source_url,
-        output_url: null,
-    })
-
+    const jobId = job.id.toString()
+    addJob(jobId, '1')
     return {
         id: job.id,
         status: 'pending',
@@ -39,7 +39,7 @@ app.post<{ Body: VideoTrimType }>('/clip', {
 })
 
 app.get<{ Params: { id: string } }>('/jobs/:id', async (request, reply) => {
-    const job = db.jobs.get(request.params.id)
+    const job = await getJob(request.params.id)
     if (!job) {
         reply.code(404)
         return {
@@ -52,6 +52,7 @@ app.get<{ Params: { id: string } }>('/jobs/:id', async (request, reply) => {
 const start = async () => {
     try {
         await app.listen({ port: 3000 })
+        connectToDB()
     } catch (err) {
         app.log.error(err)
         process.exit(1)

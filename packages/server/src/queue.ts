@@ -2,7 +2,7 @@ import Queue from "bull";
 import type { VideoTrimType } from "./types";
 import { downloadFile } from "./storage";
 import ffmpeg from 'fluent-ffmpeg'
-import db from "./db";
+import { markJobComplete } from "./db/jobs";
 
 const videoQueue = new Queue("video transcoding")
 
@@ -17,6 +17,7 @@ function trimVideo(inputPath: string, outputPath: string, start: number, end: nu
                 console.log('conversion ended')
             })
             .on('error', function (err) {
+                console.log('error trimming video')
                 console.log('error: ', err)
                 reject(err)
             })
@@ -32,14 +33,9 @@ videoQueue.process(async (job) => {
         const unmodifiedFilePath = `./media/inputs/${job.id}.${ext}`
         const outputFilePath = `./media/outputs/${job.id}.${ext}`
         await downloadFile(data.source_url, unmodifiedFilePath)
-        console.log('file downloaded')
         await trimVideo(unmodifiedFilePath, outputFilePath, data.start_ms, data.end_ms)
-        const id = job.id
-        db.jobs.set(id, {
-            ...db.jobs.get(id),
-            status: 'completed',
-            output_url: outputFilePath
-        })
+        const id = job.id.toString()
+        markJobComplete(id, outputFilePath)
     } catch (error: any) {
         console.error(error)
     }
