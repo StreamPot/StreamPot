@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
 import { ExtractAudio, ExtractAudioType, JobEntityId, JobStatus, QueueJob, Transformation, VideoTrim, type VideoTrimType } from './types'
-import { addJob, getJob } from './db/jobs'
+import { addJob, getAllJobs, getJob } from './db/jobs'
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = Fastify({
@@ -66,6 +66,10 @@ app.get<{ Params: { id: JobEntityId } }>('/jobs/:id', async (request, reply) => 
         }
     }
     return job
+})
+
+app.get('/jobs', async () => {
+    return await getAllJobs()
 })
 
 const start = async () => {

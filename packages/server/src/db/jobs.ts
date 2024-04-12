@@ -30,3 +30,7 @@ export async function getJob(id: JobEntityId): Promise<JobEntity | null> {
     const res = await getClient().query('SELECT * FROM jobs WHERE id = $1 LIMIT 1', [id])
     return <JobEntity>res.rows[0] ?? null
 }
+
+export async function getAllJobs(): Promise<JobEntity[]> {
+    return (await getClient().query('SELECT * FROM jobs')).rows as JobEntity[]
+}
