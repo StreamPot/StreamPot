@@ -1,8 +1,8 @@
 import Queue from "bull";
-import type { VideoTrimType } from "./types";
-import { downloadFile } from "./storage";
+import { JobStatus, QueueJob, Transformation } from "./types";
+import { downloadFile, getPublicUrl, uploadFile } from "./storage";
 import ffmpeg from 'fluent-ffmpeg'
-import { markJobComplete } from "./db/jobs";
+import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
 
 const videoQueue = new Queue("video transcoding")
 
@@ -23,19 +23,43 @@ function trimVideo(inputPath: string, outputPath: string, start: number, end: nu
             })
             .run()
     })
-
 }
 
-videoQueue.process(async (job) => {
+videoQueue.process(async (job: { data: QueueJob }) => {
     try {
-        const data = job.data as VideoTrimType;
-        const ext = data.source_url.split('.').pop()
-        const unmodifiedFilePath = `./media/inputs/${job.id}.${ext}`
-        const outputFilePath = `./media/outputs/${job.id}.${ext}`
-        await downloadFile(data.source_url, unmodifiedFilePath)
-        await trimVideo(unmodifiedFilePath, outputFilePath, data.start_ms, data.end_ms)
-        const id = job.id.toString()
-        markJobComplete(id, outputFilePath)
+        const entity = await getJob(job.data.entityId)
+
+        if (!entity) {
+            console.log('job not found', job.data.entityId);
+
+            return;
+        }
+
+        console.log('processing job', entity.id);
+
+        const ext = entity.source_url.split('.').pop()
+        const unmodifiedFilePath = `./media/inputs/${entity.id}.${ext}`
+        const outputFilePath = `./media/outputs/${entity.id}.${ext}`
+        await downloadFile(entity.source_url, unmodifiedFilePath)
+
+        switch (entity.type) {
+            case Transformation.Trim:
+                await trimVideo(unmodifiedFilePath, outputFilePath, entity.payload.start_ms, entity.payload.end_ms)
+                break;
+            case Transformation.ExtractAudio:
+                // await extractAudio(unmodifiedFilePath, outputFilePath)
+                break;
+        }
+
+        updateJobStatus(entity.id, JobStatus.Uploading)
+
+        const destinationFilePath = `outputs/${entity.id}.${ext}`
+        await uploadFile(outputFilePath, destinationFilePath)
+
+        markJobComplete(
+            entity.id,
+            await getPublicUrl(`outputs/${entity.id}.${ext}`)
+        )
     } catch (error: any) {
         console.error(error)
     }

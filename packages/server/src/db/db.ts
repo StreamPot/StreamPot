@@ -1,8 +1,12 @@
-import pg from 'pg'
+import pg, { Client } from 'pg'
 
-export let client: null | pg.Client = null;
+let client: pg.Client | null = null
 
-export function connectToDB() {
+export default function getClient(): Client {
+    if (client) return client
+
     client = new pg.Client(process.env.PG_CONNECTION_STRING)
     client.connect()
+
+    return client
 }

@@ -2,12 +2,13 @@
     "name": "@streampot/server",
     "scripts": {
         "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec NODE_ENV=development 'ts-node' src/main.ts",
-        "start": "NODE_ENV=production -node src/main.ts",
+        "start": "NODE_ENV=production node src/main.ts",
         "test": "vitest"
     },
     "dependencies": {
         "@fastify/type-provider-typebox": "^4.0.0",
         "@sinclair/typebox": "^0.32.20",
+        "aws-sdk": "^2.1598.0",
         "bull": "^4.12.2",
         "cross-env": "^7.0.3",
         "fastify": "^4.26.2",
