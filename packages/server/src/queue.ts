@@ -25,6 +25,23 @@ function trimVideo(inputPath: string, outputPath: string, start: number, end: nu
     })
 }
 
+function extractAudio(inputPath: string, outputPath: string) {
+    return new Promise((resolve, reject) => {
+        return ffmpeg(inputPath)
+            .output(outputPath)
+            .on('end', function () {
+                resolve("complete")
+                console.log('conversion ended')
+            })
+            .on('error', function (err) {
+                console.log('error extracting audio')
+                console.log('error: ', err)
+                reject(err)
+            })
+            .run()
+    })
+}
+
 videoQueue.process(async (job: { data: QueueJob }) => {
     try {
         const entity = await getJob(job.data.entityId)
@@ -37,28 +54,35 @@ videoQueue.process(async (job: { data: QueueJob }) => {
 
         console.log('processing job', entity.id);
 
-        const ext = entity.source_url.split('.').pop()
-        const unmodifiedFilePath = `./media/inputs/${entity.id}.${ext}`
-        const outputFilePath = `./media/outputs/${entity.id}.${ext}`
-        await downloadFile(entity.source_url, unmodifiedFilePath)
+        const sourceExt = entity.source_url.split('.').pop()
+        const localSourcePath = `./media/inputs/${entity.id}.${sourceExt}`
+        await downloadFile(entity.source_url, localSourcePath)
+
+        let localOutputPath: string;
+        let destinationFilePath: string;
 
         switch (entity.type) {
             case Transformation.Trim:
-                await trimVideo(unmodifiedFilePath, outputFilePath, entity.payload.start_ms, entity.payload.end_ms)
+                localOutputPath = `./media/outputs/${entity.id}.${sourceExt}`
+                destinationFilePath = `outputs/${entity.id}.${sourceExt}`
+                await trimVideo(localSourcePath, localOutputPath, entity.payload.start_ms, entity.payload.end_ms)
                 break;
             case Transformation.ExtractAudio:
-                // await extractAudio(unmodifiedFilePath, outputFilePath)
+                const outputExt = entity.payload.output_format || 'mp3'
+                localOutputPath = `./media/outputs/${entity.id}.${outputExt}`
+                await extractAudio(localSourcePath, localOutputPath)
+
+                destinationFilePath = `outputs/${entity.id}.${outputExt}`
                 break;
         }
 
         updateJobStatus(entity.id, JobStatus.Uploading)
 
-        const destinationFilePath = `outputs/${entity.id}.${ext}`
-        await uploadFile(outputFilePath, destinationFilePath)
+        await uploadFile(localOutputPath, destinationFilePath)
 
         markJobComplete(
             entity.id,
-            await getPublicUrl(`outputs/${entity.id}.${ext}`)
+            await getPublicUrl(destinationFilePath)
         )
     } catch (error: any) {
         console.error(error)
