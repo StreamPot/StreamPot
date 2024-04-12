@@ -1,8 +1,10 @@
 import Fastify, { FastifyRequest } from 'fastify'
+import dotenv from 'dotenv'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
-import { VideoTrim, type VideoTrimType } from './types'
-import db from './db'
+import { ExtractAudio, ExtractAudioType, JobEntityId, JobStatus, QueueJob, Transformation, VideoTrim, type VideoTrimType } from './types'
+import { addJob, getJob } from './db/jobs'
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = Fastify({
     logger: true
@@ -16,30 +18,47 @@ app.post<{ Body: VideoTrimType }>('/clip', {
         // },
     },
 }, async (request, reply) => {
-    console.log("request body", request.body);
+    const entity = await addJob({
+        type: Transformation.Trim,
+        user_id: '1',
+        status: JobStatus.Pending,
+        source_url: request.body.source_url,
+        payload: request.body
+    })
 
-    console.log("adding job to queue")
-    // TO DO - validate that it is a video file format
-    const job = await videoQueue.add({
-        source_url: request.body.source_url,
-        start_ms: request.body.start_ms,
-        end_ms: request.body.end_ms
-    })
-    db.jobs.set(job.id, {
-        status: 'pending',
-        source_url: request.body.source_url,
-        output_url: null,
-    })
+    await videoQueue.add(<QueueJob>{ entityId: entity.id })
 
     return {
-        id: job.id,
-        status: 'pending',
-        source_url: request.body.source_url,
+        id: entity.id,
+        status: entity.status,
+        source_url: entity.source_url,
     }
 })
 
-app.get<{ Params: { id: string } }>('/jobs/:id', async (request, reply) => {
-    const job = db.jobs.get(request.params.id)
+app.post<{ Body: ExtractAudioType }>('/extract-audio', {
+    schema: {
+        body: ExtractAudio,
+    },
+}, async (request, reply) => {
+    const entity = await addJob({
+        type: Transformation.ExtractAudio,
+        user_id: '1',
+        status: JobStatus.Pending,
+        source_url: request.body.source_url,
+        payload: request.body
+    })
+
+    await videoQueue.add(<QueueJob>{ entityId: entity.id })
+
+    return {
+        id: entity.id,
+        status: entity.status,
+        source_url: entity.source_url,
+    }
+})
+
+app.get<{ Params: { id: JobEntityId } }>('/jobs/:id', async (request, reply) => {
+    const job = await getJob(request.params.id)
     if (!job) {
         reply.code(404)
         return {
@@ -51,7 +70,9 @@ app.get<{ Params: { id: string } }>('/jobs/:id', async (request, reply) => {
 
 const start = async () => {
     try {
+
         await app.listen({ port: 3000 })
+
     } catch (err) {
         app.log.error(err)
         process.exit(1)
