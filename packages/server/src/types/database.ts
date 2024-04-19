@@ -1,4 +1,4 @@
-import { ExtractAudioType, VideoTrimType } from "../types";
+import { ExtractAudioType, VideoTrimType } from "./transformations";
 
 export type JobEntityId = number
 
