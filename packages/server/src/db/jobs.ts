@@ -4,7 +4,7 @@ import getClient from "./db"
 export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     const rows = await getClient().query(
         'INSERT INTO jobs (type, user_id, status, source_url, output_url, payload) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [data.type, data.user_id, data.status, data.source_url, data.output_url, data.payload],
+        [data.type, data.user_id, data.status, data.output_url, data.payload],
     )
 
     return rows.rows[0] as JobEntity

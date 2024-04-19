@@ -43,6 +43,18 @@ async function runJob() {
 runJob()
 ```
 
+## Extract audio
+
+```js
+async function extractAudio(input, start, end) {
+    const job = await sp
+        .input(input)
+        .outputFormat('mp3')
+        .run();
+    return job;
+}
+```
+
 ## How to run the server locally
 
 1. ```git clone https://github.com/jackbridger/streampot```

@@ -1,4 +1,4 @@
-import { ExtractAudioType, VideoTrimType } from "./transformations";
+import { FfmpegActionsRequestType } from "./transformations";
 
 export type JobEntityId = number
 
@@ -10,18 +10,15 @@ export enum JobStatus {
 }
 
 export enum Transformation {
-    Trim = 'trim',
-    ExtractAudio = 'extract-audio'
+    Actions = 'action'
 }
 
 type PayloadFields =
-    | { type: Transformation.Trim, payload: VideoTrimType }
-    | { type: Transformation.ExtractAudio, payload: ExtractAudioType };
+    | { type: Transformation.Actions, payload: FfmpegActionsRequestType }
 
 export type UnsavedJobEntity = PayloadFields & {
     user_id: string,
     status: JobStatus,
-    source_url: string,
     output_url?: string,
 }
 
