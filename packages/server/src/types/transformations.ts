@@ -1,7 +1,7 @@
 import { Static, Type } from '@sinclair/typebox'
 
 export const FfmpegActionsRequest = Type.Array(Type.Object({
-    action: Type.String(),
+    name: Type.String(),
     value: Type.Any(),
 }))
 

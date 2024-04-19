@@ -9,11 +9,13 @@ const client = new StreamPot({
 })
 
 test('Client test', async () => {
-    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB).startAt(1).endAt(2).run()
+    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
+        .setStartTime(1)
+        .setEndTime(2)
+        .run()
 
     console.log(clipJob);
 
     expect(clipJob).toHaveProperty('id')
     expect(clipJob).toHaveProperty('status')
-    expect(clipJob).toHaveProperty('source_url')
 })

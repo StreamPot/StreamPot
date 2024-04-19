@@ -11,8 +11,8 @@ export class StreamPot {
         this.baseUrl = baseUrl
     }
 
-    protected addAction(action: string, value: any) {
-        this.actions.push({ action, value })
+    protected addAction(name: string, value: any) {
+        this.actions.push({ name, value })
     }
 
     async checkStatus(jobId: string) {
@@ -24,21 +24,31 @@ export class StreamPot {
             console.error(error)
         }
     }
+
+    input(url: string) {
+        this.addAction('input', url)
+        return this
+    }
+
     setStartTime(seek: string | number) {
         if (seek) {
             this.addAction('setStartTime', seek)
         }
         return this
     }
-    setEndTime(seek: string | number) {
+
+    setDuration(seek: string | number) {
         if (seek) {
-            this.addAction('setEndTime', seek)
+            this.addAction('setDuration', seek)
         }
         return this
     }
 
     async run() {
-        const response = await fetch(`${this.baseUrl} /`, {
+        console.log(this.actions);
+        
+
+        const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

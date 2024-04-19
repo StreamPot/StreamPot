@@ -1,29 +1,51 @@
 import Queue from "bull";
 import { FfmpegActionsRequestType, JobStatus, QueueJob, Transformation } from "./types";
 import { downloadFile, getPublicUrl, uploadFile } from "./storage";
-import ffmpeg from 'fluent-ffmpeg'
+import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
 
 const videoQueue = new Queue("video transcoding")
 
-function runActions(payload: FfmpegActionsRequestType) {
+const allowedActions = [
+    'input',
+    'inputFormat',
+    'output',
+    'outputFormat',
+    'setStartTime',
+    'setDuration',
+    'output',
+    'outputFormat',
+    'videoCodec',
+    'audioCodec',
+    'format',
+    'noAudio',
+    'noVideo',
+    'audioBitrate',
+    'videoBitrate',
+    'size',
+    'fps',
+    'outputOptions',
+    'audioFilters',
+    'videoFilters',
+    'audioChannels',
+    'audioFrequency',
+];
 
-}
+async function runActions(payload: FfmpegActionsRequestType) {
+    const ffmpegCommand = ffmpeg();
 
-function extractAudio(inputPath: string, outputPath: string) {
+    for (const action of payload) {
+        if (action.name in allowedActions) {
+            ffmpegCommand[action.name](action.value)
+        }
+    }
+
+    // brb. 16:46 - 16:48
+
     return new Promise((resolve, reject) => {
-        return ffmpeg(inputPath)
-            .output(outputPath)
-            .on('end', function () {
-                resolve("complete")
-                console.log('conversion ended')
-            })
-            .on('error', function (err) {
-                console.log('error extracting audio')
-                console.log('error: ', err)
-                reject(err)
-            })
-            .run()
+        ffmpegCommand.on('end', resolve)
+        ffmpegCommand.on('error', reject)
+        ffmpegCommand.run()
     })
 }
 
@@ -39,11 +61,6 @@ videoQueue.process(async (job: { data: QueueJob }) => {
 
         console.log('processing job', entity.id);
 
-
-
-        let localOutputPath: string;
-        let destinationFilePath: string;
-
         switch (entity.type) {
             case Transformation.Actions:
                 await runActions(entity.payload)
@@ -51,8 +68,6 @@ videoQueue.process(async (job: { data: QueueJob }) => {
         }
 
         updateJobStatus(entity.id, JobStatus.Uploading)
-
-
 
 
     } catch (error: any) {
