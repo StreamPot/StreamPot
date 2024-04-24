@@ -1,6 +1,6 @@
 import Queue from "bull";
 import fs, { promises as fsPromises } from 'fs';
-import { FfmpegActionsRequestType, JobStatus, QueueJob, Transformation } from "./types";
+import { FfmpegActionsRequestType, JobStatus, QueueJob } from "./types";
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
 import { getPublicUrl, uploadFile } from "./storage";
@@ -79,18 +79,20 @@ videoQueue.process(async (job: { data: QueueJob }) => {
             return;
         }
         await runActions(entity.payload, job.data.entityId)
+        console.log('ran the actions ')
         updateJobStatus(entity.id, JobStatus.Uploading)
         for (const file of fs.readdirSync(`/tmp/${job.data.entityId}`)) {
             const upload: any = await uploadFile(`/tmp/${job.data.entityId}/${file}`, `${job.data.entityId}-${file}`)
             const publicUrl = await getPublicUrl(upload.Key)
             uploads.push(publicUrl)
+            console.log('public url ',publicUrl)
         }
         // delete all the files in the directory
         await fsPromises.rm(`/tmp/${job.data.entityId}`, { recursive: true });
         if (uploads.length === 0) {
             throw new Error('No files uploaded')
         }
-        markJobComplete(job.data.entityId, uploads[0])
+        markJobComplete(job.data.entityId, uploads)
     } catch (error: any) {
         console.error(error)
         updateJobStatus(job.data.entityId, JobStatus.Failed)

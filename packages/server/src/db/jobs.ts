@@ -10,11 +10,11 @@ export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     return rows.rows[0] as JobEntity
 }
 
-export async function markJobComplete(id: JobEntityId, outputUrl: string) {
+export async function markJobComplete(id: JobEntityId, outputUrls: string[]) {
     const completedAt = new Date();
     const res = await getClient().query(
         'UPDATE jobs SET status = $1, completed_at = $2, output_url = $3 WHERE id = $4',
-        [JobStatus.Completed, completedAt, outputUrl, id]
+        [JobStatus.Completed, completedAt, outputUrls, id]
     );
     return res;
 }
