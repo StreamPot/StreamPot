@@ -1,12 +1,14 @@
 import Queue from "bull";
+import fs, { promises as fsPromises } from 'fs';
 import { FfmpegActionsRequestType, JobStatus, QueueJob, Transformation } from "./types";
-import { downloadFile, getPublicUrl, uploadFile } from "./storage";
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
+import { uploadFile } from "./storage";
 
 const videoQueue = new Queue("video transcoding")
+type FfmpegMethodName = keyof FfmpegCommand;
 
-const allowedActions = [
+const allowedActions: FfmpegMethodName[] = [
     'input',
     'inputFormat',
     'output',
@@ -31,47 +33,66 @@ const allowedActions = [
     'audioFrequency',
 ];
 
-async function runActions(payload: FfmpegActionsRequestType) {
+function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand, values: any[]) {
+    const method: Function | undefined = command[methodName];
+
+    if (typeof method === 'function') {
+        method.apply(command, values);
+    } else {
+        throw new Error(`Method ${String(methodName)} is not a function on FfmpegCommand.`);
+    }
+}
+
+async function runActions(payload: FfmpegActionsRequestType, id: number) {
     const ffmpegCommand = ffmpeg();
 
     for (const action of payload) {
-        if (action.name in allowedActions) {
-            ffmpegCommand[action.name](action.value)
+        const methodName = action.name as keyof FfmpegCommand;
+        if (allowedActions.includes(methodName)) {
+            safeFfmpegCall(ffmpegCommand, methodName, [action.value]); // Wrap action.value in an array
         }
     }
 
-    // brb. 16:46 - 16:48
+    const dir = `/tmp/${id}`;
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
+    const output = `${dir}/vid.mp4`;
+    ffmpegCommand.output(output);
 
     return new Promise((resolve, reject) => {
         ffmpegCommand.on('end', resolve)
         ffmpegCommand.on('error', reject)
-        ffmpegCommand.run()
+        ffmpegCommand
+            .run()
     })
 }
 
 videoQueue.process(async (job: { data: QueueJob }) => {
     try {
+        const uploads: any = []
         const entity = await getJob(job.data.entityId)
 
         if (!entity) {
             console.log('job not found', job.data.entityId);
-
             return;
         }
-
-        console.log('processing job', entity.id);
-
-        switch (entity.type) {
-            case Transformation.Actions:
-                await runActions(entity.payload)
-                break;
-        }
-
+        await runActions(entity.payload, job.data.entityId)
         updateJobStatus(entity.id, JobStatus.Uploading)
-
-
+        for (const file of fs.readdirSync(`/tmp/${job.data.entityId}`)) {
+            const upload: any = await uploadFile(`/tmp/${job.data.entityId}/${file}`, `${job.data.entityId}-${file}`)
+            uploads.push(upload)
+        }
+        // delete all the files in the directory
+        await fsPromises.rm(`/tmp/${job.data.entityId}`, { recursive: true });
+        if (uploads.length === 0) {
+            throw new Error('No files uploaded')
+        }
+        markJobComplete(job.data.entityId, uploads[0].Location)
     } catch (error: any) {
         console.error(error)
+        updateJobStatus(job.data.entityId, JobStatus.Failed)
     }
 })
 

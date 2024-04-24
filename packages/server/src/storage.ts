@@ -56,6 +56,7 @@ export async function uploadFile(file: string, key: string) {
         console.log(data);
 
         console.log(`File uploaded successfully. ${data.Location}`);
+        return data
     } catch (err) {
         console.error("Error uploading file: ", err);
     }

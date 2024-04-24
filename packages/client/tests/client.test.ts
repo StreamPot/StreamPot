@@ -11,7 +11,7 @@ const client = new StreamPot({
 test('Client test', async () => {
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
         .setStartTime(1)
-        .setEndTime(2)
+        .setDuration(2)
         .run()
 
     console.log(clipJob);
