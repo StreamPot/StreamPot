@@ -45,21 +45,28 @@ function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand,
 
 async function runActions(payload: FfmpegActionsRequestType, id: number) {
     const ffmpegCommand = ffmpeg();
+    const dir = `/tmp/${id}`;
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+    const outputModifiedActions: FfmpegActionsRequestType = payload.map(action => {
+        if (action.name === 'output') {
+            const fileName = action.value.split('/').pop();
+            return { name: 'output', value: `${dir}/${fileName}` }
+        }
+        else return action
+    })
 
-    for (const action of payload) {
+    for (const action of outputModifiedActions) {
         const methodName = action.name as keyof FfmpegCommand;
         if (allowedActions.includes(methodName)) {
             safeFfmpegCall(ffmpegCommand, methodName, [action.value]); // Wrap action.value in an array
         }
     }
 
-    const dir = `/tmp/${id}`;
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
 
-    const output = `${dir}/vid.mp4`;
-    ffmpegCommand.output(output);
+    // const output = `${dir}/vid.mp4`;
+    // ffmpegCommand.output(output);
 
     return new Promise((resolve, reject) => {
         ffmpegCommand.on('end', resolve)
@@ -85,7 +92,7 @@ videoQueue.process(async (job: { data: QueueJob }) => {
             const upload: any = await uploadFile(`/tmp/${job.data.entityId}/${file}`, `${job.data.entityId}-${file}`)
             const publicUrl = await getPublicUrl(upload.Key)
             uploads.push(publicUrl)
-            console.log('public url ',publicUrl)
+            console.log('public url ', publicUrl)
         }
         // delete all the files in the directory
         await fsPromises.rm(`/tmp/${job.data.entityId}`, { recursive: true });

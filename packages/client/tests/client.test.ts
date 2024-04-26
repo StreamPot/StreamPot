@@ -19,3 +19,23 @@ test('Client test', async () => {
     expect(clipJob).toHaveProperty('id')
     expect(clipJob).toHaveProperty('status')
 })
+
+test('Client test multi outputs', async () => {
+    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
+        .setStartTime(1)
+        .setDuration(2)
+        .output('test/output_video.mp4')
+        .noAudio()
+        .output('output_audio.mp3')
+        .noVideo()
+        .audioCodec('libmp3lame')
+        .audioBitrate(192)
+        .outputOptions([
+            '-write_xing 0',
+            '-af asetpts=N/SR/TB',
+            '-id3v2_version', '3'
+        ])
+        .run()
+    expect(clipJob).toHaveProperty('id')
+    expect(clipJob).toHaveProperty('status')
+})

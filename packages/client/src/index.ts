@@ -30,6 +30,11 @@ export class StreamPot {
         return this
     }
 
+    output(path: string) {
+        this.addAction('output', path)
+        return this
+    }
+
     setStartTime(seek: string | number) {
         if (seek) {
             this.addAction('setStartTime', seek)
@@ -43,10 +48,29 @@ export class StreamPot {
         }
         return this
     }
+    noAudio() {
+        this.addAction('noAudio', null)
+        return this
+    }
+    noVideo() {
+        this.addAction('noVideo', null)
+        return this
+    }
+    audioCodec(codec: string) {
+        this.addAction('audioCodec', codec)
+        return this
+    }
+    outputOptions(options: string | string[]) {
+        this.addAction('outputOptions', options)
+        return this
+    }
+    audioBitrate(bitrate: number) {
+        this.addAction('audioBitrate', bitrate)
+        return this
+    }
 
     async run() {
         console.log(this.actions);
-        
 
         const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
