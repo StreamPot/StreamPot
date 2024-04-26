@@ -26,6 +26,8 @@ services:
       S3_REGION: ${S3_REGION}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
       S3_ENDPOINT: ${S3_ENDPOINT}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
       - "3000:3000"
     depends_on:
