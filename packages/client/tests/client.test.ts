@@ -2,13 +2,14 @@ import { expect, test } from 'vitest'
 import { StreamPot } from '../src'
 
 const EXAMPLE_BUNNY_MP4_1MB = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4"
-
-const client = new StreamPot({
-    secret: 'secret',
-    baseUrl: 'http://localhost:3000',
-})
+const EXAMPLE_WATERMARK_ORANGE = 'https://pngfre.com/wp-content/uploads/orange-poster.png'
 
 test('Client test', async () => {
+    const client = new StreamPot({
+        secret: 'secret',
+        baseUrl: 'http://localhost:3000',
+    })
+
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
         .setStartTime(1)
         .setDuration(2)
@@ -21,22 +22,49 @@ test('Client test', async () => {
     expect(clipJob).toHaveProperty('status')
 })
 
-test('Client test multi outputs', async () => {
+test('Client test multi inputs', async () => {
+    const client = new StreamPot({
+        secret: 'secret',
+        baseUrl: 'http://localhost:3000',
+    })
+    const clipJob = await client
+        .input(EXAMPLE_BUNNY_MP4_1MB)
+        .input(EXAMPLE_BUNNY_MP4_1MB)
+        .videoCodec('libx264')
+        .complexFilter([
+            '[0:v]scale=400:300[0scaled]',
+            '[1:v]scale=400:300[1scaled]',
+            '[0scaled]pad=800:300[0padded]',
+            '[0padded][1scaled]overlay=shortest=1:x=400[output]',
+            'amix=inputs=2:duration=shortest',  ///////// here
+        ]).outputOptions(['-map [output]'])
+        .output('output.mp4')
+        .run();
+    console.log(clipJob);
+})
+
+test('add watermark image', async () => {
+    const client = new StreamPot({
+        secret: 'secret',
+        baseUrl: 'http://localhost:3000',
+    })
+
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
-        .setStartTime(1)
-        .setDuration(2)
-        .output('test/output_video.mp4')
-        .noAudio()
-        .output('output_audio.mp3')
-        .noVideo()
-        .audioCodec('libmp3lame')
-        .audioBitrate(192)
-        .outputOptions([
-            '-write_xing 0',
-            '-af asetpts=N/SR/TB',
-            '-id3v2_version', '3'
+        .input(EXAMPLE_WATERMARK_ORANGE)
+        .complexFilter([
+            {
+                filter: 'scale',
+                options: { w: 'iw*0.1', h: 'ih*0.1' },
+                inputs: '1:v',
+                outputs: 'scaled'
+            },
+            {
+                filter: 'overlay',
+                options: { x: 100, y: 100 },
+                inputs: ['0:v', 'scaled']
+            }
         ])
+        .output('output5.mp4')
         .run()
-    expect(clipJob).toHaveProperty('id')
-    expect(clipJob).toHaveProperty('status')
+    console.log(clipJob);
 })

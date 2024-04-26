@@ -31,6 +31,7 @@ const allowedActions: FfmpegMethodName[] = [
     'videoFilters',
     'audioChannels',
     'audioFrequency',
+    'complexFilter'
 ];
 
 function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand, values: any[]) {
@@ -123,7 +124,6 @@ videoQueue.process(async (job: { data: QueueJob }) => {
         const baseDir = getNewTmpDir();
 
         const { payload, preservedPaths } = makePayloadPathsSafe(baseDir, entity.payload);
-
         await runActions(payload, job.data.entityId)
 
         updateJobStatus(entity.id, JobStatus.Uploading)

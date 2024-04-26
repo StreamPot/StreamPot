@@ -53,7 +53,6 @@ export async function uploadFile({
             Key: remoteFileName,
             Body: fileContent
         }).promise();
-
         console.log(`File uploaded successfully. ${data.Location}`);
         return data
     } catch (err) {

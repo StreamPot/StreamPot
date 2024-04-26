@@ -60,12 +60,20 @@ export class StreamPot {
         this.addAction('audioCodec', codec)
         return this
     }
-    outputOptions(options: string | string[]) {
+    videoCodec(codec: string) {
+        this.addAction('videoCodec', codec)
+        return this
+    }
+    outputOptions(...options: (string | string[])[]) {
         this.addAction('outputOptions', options)
         return this
     }
     audioBitrate(bitrate: number) {
         this.addAction('audioBitrate', bitrate)
+        return this
+    }
+    complexFilter(filters: object[] | string[]) {
+        this.addAction('complexFilter', filters)
         return this
     }
 
