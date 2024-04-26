@@ -12,6 +12,7 @@ test('Client test', async () => {
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
         .setStartTime(1)
         .setDuration(2)
+        .output('output.mp4')
         .run()
 
     console.log(clipJob);

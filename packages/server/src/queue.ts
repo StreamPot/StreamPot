@@ -43,30 +43,30 @@ function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand,
     }
 }
 
+/**
+ * Generate a random file name preserving the extension 
+ */
+function randomifyFileName(fileName: string) {
+    const extension = fileName.split('.').pop();
+
+    if (!extension) {
+        throw new Error('No extension found in file name');
+    }
+
+    const randomName = Math.random().toString(36).substring(7);
+
+    return `${randomName}.${extension}`;
+}
+
 async function runActions(payload: FfmpegActionsRequestType, id: number) {
     const ffmpegCommand = ffmpeg();
-    const dir = `/tmp/${id}`;
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-    const outputModifiedActions: FfmpegActionsRequestType = payload.map(action => {
-        if (action.name === 'output') {
-            const fileName = action.value.split('/').pop();
-            return { name: 'output', value: `${dir}/${fileName}` }
-        }
-        else return action
-    })
 
-    for (const action of outputModifiedActions) {
+    for (const action of payload) {
         const methodName = action.name as keyof FfmpegCommand;
         if (allowedActions.includes(methodName)) {
             safeFfmpegCall(ffmpegCommand, methodName, [action.value]); // Wrap action.value in an array
         }
     }
-
-
-    // const output = `${dir}/vid.mp4`;
-    // ffmpegCommand.output(output);
 
     return new Promise((resolve, reject) => {
         ffmpegCommand.on('end', resolve)
@@ -76,26 +76,75 @@ async function runActions(payload: FfmpegActionsRequestType, id: number) {
     })
 }
 
+function getNewTmpDir() {
+    const dir = '/tmp/' + Math.random().toString(36).substring(7);
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
+    return dir;
+}
+
+function makePayloadPathsSafe(basePath: string, payload: FfmpegActionsRequestType): {
+    payload: FfmpegActionsRequestType,
+    preservedPaths: Map<string, string>
+} {
+    const preservedPaths = new Map<string, string>();
+
+    return {
+        payload: payload.map((action) => {
+            if (action.name !== 'output') {
+                return action;
+            }
+
+            const safeFileName = `${basePath}/${randomifyFileName(action.value)}`;
+
+            preservedPaths.set(action.value, safeFileName);
+
+            return {
+                name: action.name,
+                value: safeFileName
+            }
+        }),
+        preservedPaths: preservedPaths,
+    }
+}
+
 videoQueue.process(async (job: { data: QueueJob }) => {
     try {
-        const uploads: any = []
         const entity = await getJob(job.data.entityId)
 
         if (!entity) {
             console.log('job not found', job.data.entityId);
             return;
         }
-        await runActions(entity.payload, job.data.entityId)
-        console.log('ran the actions ')
+
+        const baseDir = getNewTmpDir();
+
+        const { payload, preservedPaths } = makePayloadPathsSafe(baseDir, entity.payload);
+
+        await runActions(payload, job.data.entityId)
+
         updateJobStatus(entity.id, JobStatus.Uploading)
-        for (const file of fs.readdirSync(`/tmp/${job.data.entityId}`)) {
-            const upload: any = await uploadFile(`/tmp/${job.data.entityId}/${file}`, `${job.data.entityId}-${file}`)
-            const publicUrl = await getPublicUrl(upload.Key)
-            uploads.push(publicUrl)
-            console.log('public url ', publicUrl)
-        }
-        // delete all the files in the directory
-        await fsPromises.rm(`/tmp/${job.data.entityId}`, { recursive: true });
+
+        const uploads = await Promise.all([...preservedPaths].map(async ([originalPath, safePath]) => {
+            const remoteFileName = randomifyFileName(safePath.split('/').pop() as string)
+
+            const upload: any = await uploadFile({
+                localFilePath: safePath,
+                remoteFileName: remoteFileName,
+            })
+
+            return {
+                ...upload,
+                path: originalPath,
+                publicUrl: await getPublicUrl(remoteFileName)
+            }
+        }));
+
+        fsPromises.rm(baseDir, { recursive: true });
+
         if (uploads.length === 0) {
             throw new Error('No files uploaded')
         }

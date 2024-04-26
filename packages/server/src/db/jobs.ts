@@ -10,7 +10,7 @@ export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     return rows.rows[0] as JobEntity
 }
 
-export async function markJobComplete(id: JobEntityId, outputUrls: string[]) {
+export async function markJobComplete(id: JobEntityId, outputUrls: object[]) {
     const completedAt = new Date();
     const serializedOutputUrls = JSON.stringify(outputUrls);
 
