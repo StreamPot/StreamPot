@@ -1,6 +1,6 @@
 import Queue from "bull";
 import fs, { promises as fsPromises } from 'fs';
-import { FfmpegActionsRequestType, JobStatus, QueueJob } from "./types";
+import { JobStatus, QueueJob, type FfmpegActionsRequestType } from "./types";
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
 import { getPublicUrl, uploadFile } from "./storage";
