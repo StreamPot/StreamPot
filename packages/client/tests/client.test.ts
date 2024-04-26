@@ -9,11 +9,34 @@ const client = new StreamPot({
 })
 
 test('Client test', async () => {
-    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB).startAt(1).endAt(2).run()
+    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
+        .setStartTime(1)
+        .setDuration(2)
+        .output('output.mp4')
+        .run()
 
     console.log(clipJob);
 
     expect(clipJob).toHaveProperty('id')
     expect(clipJob).toHaveProperty('status')
-    expect(clipJob).toHaveProperty('source_url')
+})
+
+test('Client test multi outputs', async () => {
+    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
+        .setStartTime(1)
+        .setDuration(2)
+        .output('test/output_video.mp4')
+        .noAudio()
+        .output('output_audio.mp3')
+        .noVideo()
+        .audioCodec('libmp3lame')
+        .audioBitrate(192)
+        .outputOptions([
+            '-write_xing 0',
+            '-af asetpts=N/SR/TB',
+            '-id3v2_version', '3'
+        ])
+        .run()
+    expect(clipJob).toHaveProperty('id')
+    expect(clipJob).toHaveProperty('status')
 })

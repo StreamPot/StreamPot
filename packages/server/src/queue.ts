@@ -1,45 +1,114 @@
 import Queue from "bull";
-import { JobStatus, QueueJob, Transformation } from "./types";
-import { downloadFile, getPublicUrl, uploadFile } from "./storage";
-import ffmpeg from 'fluent-ffmpeg'
+import fs, { promises as fsPromises } from 'fs';
+import { FfmpegActionsRequestType, JobStatus, QueueJob } from "./types";
+import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
+import { getPublicUrl, uploadFile } from "./storage";
 
 const videoQueue = new Queue("video transcoding")
+type FfmpegMethodName = keyof FfmpegCommand;
 
-function trimVideo(inputPath: string, outputPath: string, start: number, end: number) {
+const allowedActions: FfmpegMethodName[] = [
+    'input',
+    'inputFormat',
+    'output',
+    'outputFormat',
+    'setStartTime',
+    'setDuration',
+    'output',
+    'outputFormat',
+    'videoCodec',
+    'audioCodec',
+    'format',
+    'noAudio',
+    'noVideo',
+    'audioBitrate',
+    'videoBitrate',
+    'size',
+    'fps',
+    'outputOptions',
+    'audioFilters',
+    'videoFilters',
+    'audioChannels',
+    'audioFrequency',
+];
+
+function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand, values: any[]) {
+    const method: Function | undefined = command[methodName];
+
+    if (typeof method === 'function') {
+        method.apply(command, values);
+    } else {
+        throw new Error(`Method ${String(methodName)} is not a function on FfmpegCommand.`);
+    }
+}
+
+/**
+ * Generate a random file name preserving the extension 
+ */
+function randomifyFileName(fileName: string) {
+    const extension = fileName.split('.').pop();
+
+    if (!extension) {
+        throw new Error('No extension found in file name');
+    }
+
+    const randomName = Math.random().toString(36).substring(7);
+
+    return `${randomName}.${extension}`;
+}
+
+async function runActions(payload: FfmpegActionsRequestType, id: number) {
+    const ffmpegCommand = ffmpeg();
+
+    for (const action of payload) {
+        const methodName = action.name as keyof FfmpegCommand;
+        if (allowedActions.includes(methodName)) {
+            safeFfmpegCall(ffmpegCommand, methodName, [action.value]); // Wrap action.value in an array
+        }
+    }
+
     return new Promise((resolve, reject) => {
-        return ffmpeg(inputPath)
-            .setStartTime(start / 1000)
-            .setDuration((end - start) / 1000)
-            .output(outputPath)
-            .on('end', function () {
-                resolve("complete")
-                console.log('conversion ended')
-            })
-            .on('error', function (err) {
-                console.log('error trimming video')
-                console.log('error: ', err)
-                reject(err)
-            })
+        ffmpegCommand.on('end', resolve)
+        ffmpegCommand.on('error', reject)
+        ffmpegCommand
             .run()
     })
 }
 
-function extractAudio(inputPath: string, outputPath: string) {
-    return new Promise((resolve, reject) => {
-        return ffmpeg(inputPath)
-            .output(outputPath)
-            .on('end', function () {
-                resolve("complete")
-                console.log('conversion ended')
-            })
-            .on('error', function (err) {
-                console.log('error extracting audio')
-                console.log('error: ', err)
-                reject(err)
-            })
-            .run()
-    })
+function getNewTmpDir() {
+    const dir = '/tmp/' + Math.random().toString(36).substring(7);
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+
+    return dir;
+}
+
+function makePayloadPathsSafe(basePath: string, payload: FfmpegActionsRequestType): {
+    payload: FfmpegActionsRequestType,
+    preservedPaths: Map<string, string>
+} {
+    const preservedPaths = new Map<string, string>();
+
+    return {
+        payload: payload.map((action) => {
+            if (action.name !== 'output') {
+                return action;
+            }
+
+            const safeFileName = `${basePath}/${randomifyFileName(action.value)}`;
+
+            preservedPaths.set(action.value, safeFileName);
+
+            return {
+                name: action.name,
+                value: safeFileName
+            }
+        }),
+        preservedPaths: preservedPaths,
+    }
 }
 
 videoQueue.process(async (job: { data: QueueJob }) => {
@@ -48,44 +117,41 @@ videoQueue.process(async (job: { data: QueueJob }) => {
 
         if (!entity) {
             console.log('job not found', job.data.entityId);
-
             return;
         }
 
-        console.log('processing job', entity.id);
+        const baseDir = getNewTmpDir();
 
-        const sourceExt = entity.source_url.split('.').pop()
-        const localSourcePath = `./media/inputs/${entity.id}.${sourceExt}`
-        await downloadFile(entity.source_url, localSourcePath)
+        const { payload, preservedPaths } = makePayloadPathsSafe(baseDir, entity.payload);
 
-        let localOutputPath: string;
-        let destinationFilePath: string;
-
-        switch (entity.type) {
-            case Transformation.Trim:
-                localOutputPath = `./media/outputs/${entity.id}.${sourceExt}`
-                destinationFilePath = `outputs/${entity.id}.${sourceExt}`
-                await trimVideo(localSourcePath, localOutputPath, entity.payload.start_ms, entity.payload.end_ms)
-                break;
-            case Transformation.ExtractAudio:
-                const outputExt = entity.payload.output_format || 'mp3'
-                localOutputPath = `./media/outputs/${entity.id}.${outputExt}`
-                await extractAudio(localSourcePath, localOutputPath)
-
-                destinationFilePath = `outputs/${entity.id}.${outputExt}`
-                break;
-        }
+        await runActions(payload, job.data.entityId)
 
         updateJobStatus(entity.id, JobStatus.Uploading)
 
-        await uploadFile(localOutputPath, destinationFilePath)
+        const uploads = await Promise.all([...preservedPaths].map(async ([originalPath, safePath]) => {
+            const remoteFileName = randomifyFileName(safePath.split('/').pop() as string)
 
-        markJobComplete(
-            entity.id,
-            await getPublicUrl(destinationFilePath)
-        )
+            const upload: any = await uploadFile({
+                localFilePath: safePath,
+                remoteFileName: remoteFileName,
+            })
+
+            return {
+                ...upload,
+                path: originalPath,
+                publicUrl: await getPublicUrl(remoteFileName)
+            }
+        }));
+
+        fsPromises.rm(baseDir, { recursive: true });
+
+        if (uploads.length === 0) {
+            throw new Error('No files uploaded')
+        }
+        markJobComplete(job.data.entityId, uploads)
     } catch (error: any) {
         console.error(error)
+        updateJobStatus(job.data.entityId, JobStatus.Failed)
     }
 })
 

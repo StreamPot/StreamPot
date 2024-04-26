@@ -3,18 +3,20 @@ import getClient from "./db"
 
 export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     const rows = await getClient().query(
-        'INSERT INTO jobs (type, user_id, status, source_url, output_url, payload) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-        [data.type, data.user_id, data.status, data.source_url, data.output_url, data.payload],
+        'INSERT INTO jobs (type, user_id, status, payload) VALUES ($1, $2, $3, $4::jsonb) RETURNING *',
+        [data.type, data.user_id, data.status, JSON.stringify(data.payload)],
     )
 
     return rows.rows[0] as JobEntity
 }
 
-export async function markJobComplete(id: JobEntityId, outputUrl: string) {
+export async function markJobComplete(id: JobEntityId, outputUrls: object[]) {
     const completedAt = new Date();
+    const serializedOutputUrls = JSON.stringify(outputUrls);
+
     const res = await getClient().query(
         'UPDATE jobs SET status = $1, completed_at = $2, output_url = $3 WHERE id = $4',
-        [JobStatus.Completed, completedAt, outputUrl, id]
+        [JobStatus.Completed, completedAt, serializedOutputUrls, id]
     );
     return res;
 }

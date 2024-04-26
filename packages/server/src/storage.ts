@@ -35,27 +35,27 @@ export function getS3Client() {
     });
 }
 
-export async function uploadFile(file: string, key: string) {
+export async function uploadFile({
+    localFilePath,
+    remoteFileName,
+}: {
+    localFilePath: string,
+    remoteFileName: string
+}) {
     try {
         const bucketName = process.env.S3_BUCKET_NAME
-        const fileContent = fs.readFileSync(file);
+        const fileContent = fs.readFileSync(localFilePath);
         if (!bucketName) throw new Error('Bucket name not set')
 
         const s3 = getS3Client()
-        console.log({
-            Bucket: bucketName,
-            Key: key,
-            Body: fileContent
-        })
         const data = await s3.upload({
             Bucket: bucketName,
-            Key: key,
+            Key: remoteFileName,
             Body: fileContent
         }).promise();
 
-        console.log(data);
-
         console.log(`File uploaded successfully. ${data.Location}`);
+        return data
     } catch (err) {
         console.error("Error uploading file: ", err);
     }
