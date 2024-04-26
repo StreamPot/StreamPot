@@ -1,0 +1,6 @@
+/* Only show it on desktop */
+@media (max-width: 1000px) {
+    .image {
+        display: none;
+    }
+}
