@@ -21,7 +21,7 @@ const html = ref()
 onBeforeMount(async () => {
     html.value = await codeToHtml(code, {
         lang: 'javascript',
-        theme: 'synthwave-84'
+        theme: 'tokyo-night'
     })
 })
 </script>
@@ -32,7 +32,7 @@ onBeforeMount(async () => {
 
 <style scoped>
 .code {
-    background-color: #262335;
+    background-color: #1a1b26;
     color: #d4d4d4;
     padding: 1rem;
     border-radius: 0.5rem;
