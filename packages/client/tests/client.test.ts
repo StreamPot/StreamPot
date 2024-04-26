@@ -4,10 +4,12 @@ import { StreamPot } from '../src'
 const EXAMPLE_BUNNY_MP4_1MB = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4"
 const EXAMPLE_WATERMARK_ORANGE = 'https://pngfre.com/wp-content/uploads/orange-poster.png'
 
+const BASE_URL = 'http://127.0.0.1:3000'
+
 test('Client test', async () => {
     const client = new StreamPot({
         secret: 'secret',
-        baseUrl: 'http://localhost:3000',
+        baseUrl: BASE_URL,
     })
 
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
@@ -25,7 +27,7 @@ test('Client test', async () => {
 test('Client test multi inputs', async () => {
     const client = new StreamPot({
         secret: 'secret',
-        baseUrl: 'http://localhost:3000',
+        baseUrl: BASE_URL,
     })
     const clipJob = await client
         .input(EXAMPLE_BUNNY_MP4_1MB)
@@ -46,7 +48,7 @@ test('Client test multi inputs', async () => {
 test('add watermark image', async () => {
     const client = new StreamPot({
         secret: 'secret',
-        baseUrl: 'http://localhost:3000',
+        baseUrl: BASE_URL,
     })
 
     const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
