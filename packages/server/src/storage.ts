@@ -21,14 +21,14 @@ export function getS3Client() {
     if (S3Client) return S3Client
 
     if (!process.env.S3_ACCESS_KEY) throw new Error('S3_ACCESS_KEY not set')
-    if (!process.env.S3_SECRET_ACCESS_KEY) throw new Error('S3_SECRET_ACCESS_KEY not set')
+    if (!process.env.S3_SECRET_KEY) throw new Error('S3_SECRET_KEY not set')
     // if (!process.env.S3_REGION) throw new Error('S3_REGION not set')
     if (!process.env.S3_BUCKET_NAME) throw new Error('S3_BUCKET_NAME not set')
 
     return S3Client = new S3({
         endpoint: process.env.S3_ENDPOINT,
         accessKeyId: process.env.S3_ACCESS_KEY,
-        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        secretAccessKey: process.env.S3_SECRET_KEY,
         region: process.env.S3_REGION,
         s3ForcePathStyle: true,
         signatureVersion: 'v4'

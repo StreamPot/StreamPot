@@ -5,7 +5,14 @@ import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
 import { getPublicUrl, uploadFile } from "./storage";
 
-const videoQueue = new Queue("video transcoding")
+const videoQueue = new Queue("video transcoding", {
+    redis: {
+        host: process.env.REDIS_HOST,
+        port: parseInt(process.env.REDIS_PORT as string),
+        password: process.env.REDIS_PASSWORD,
+    },
+});
+
 type FfmpegMethodName = keyof FfmpegCommand;
 
 const allowedActions: FfmpegMethodName[] = [
