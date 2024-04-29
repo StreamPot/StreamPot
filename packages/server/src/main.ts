@@ -50,8 +50,10 @@ app.get('/jobs', async () => {
 
 const start = async () => {
     try {
-
-        await app.listen({ port: 3000, host: "0.0.0.0" })
+        if (process.env.NODE_ENV === 'development') {
+            await app.listen({ port: 3000, host: 'localhost' })
+        }
+        else await app.listen({ port: 3000, host: "0.0.0.0" })
 
     } catch (err) {
         app.log.error(err)
