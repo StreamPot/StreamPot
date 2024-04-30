@@ -2,7 +2,7 @@
 
 *Note: this is in the very early stages of development*
 
-StreamPot is a project that provides scaffolding for transforming media (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
+StreamPot is a project that provides scaffolding for transforming media in your app (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
 
 We are building this because an increasing number of projects are transforming media as part of their workflow. 
 
@@ -17,14 +17,21 @@ You can copy the .env.example format and set
 * S3_BUCKET_NAME
 * S3_ENDPOINT
 
+### Add redis details to .env
+E.g.
+* REDIS_HOST=redis
+* REDIS_PORT=6379
+* REDIS_PASSWORD=redis
+
 ### Run the app
 ```cd packages/server && docker-compose up```
 
-## Running a job
+## Running a job in your app
+Note: You should only run this from your server.
 
 ### Install the client library
 
-```npm i streampot```
+```pnpm i streampot```
 
 ### Initialise the client & submit a job.
 ```js
@@ -49,7 +56,7 @@ setTimeout(async () => {
     if (job.status === 'completed'){
         console.log(job.output_url)
     } 
-},10000) 
+},10000) // wait 10 seconds
 ```
 
 ## Acknowledgements
