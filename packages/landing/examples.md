@@ -4,7 +4,7 @@ This page demonstrates how to use StreamPot client from your server. It assumes 
 
 ## Trim a video
 ```js
-import StreamPot from 'streampot'
+import StreamPot from '@streampot/client'
 
 const EXAMPLE_INPUT_VIDEO = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4";
 

@@ -6,19 +6,15 @@
 ::: code-group
 
 ```sh [npm]
-$ npm add -D streampot
+$ npm add -D @streampot/client
 ```
 
 ```sh [pnpm]
-$ pnpm add -D streampot
+$ pnpm add -D @streampot/client
 ```
 
 ```sh [yarn]
-$ yarn add -D streampot
-```
-
-```sh [bun]
-$ bun add -D streampot
+$ yarn add -D @streampot/client
 ```
 
 :::
@@ -26,7 +22,7 @@ $ bun add -D streampot
 ## Usage
 
 ```js
-import StreamPot from 'streampot'
+import StreamPot from '@streampot/client'
 
 const sp = new StreamPot({
     secret: 'your-api-key',
