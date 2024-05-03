@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { StreamPot } from '../src'
+import StreamPot from '../src'
 
 const EXAMPLE_BUNNY_MP4_1MB = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4"
 const EXAMPLE_WATERMARK_ORANGE = 'https://pngfre.com/wp-content/uploads/orange-poster.png'
