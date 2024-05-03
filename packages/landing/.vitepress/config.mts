@@ -25,6 +25,12 @@ export default defineConfig({
           // { text: 'Markdown Examples', link: '/examples' },
           { text: 'Trim a video', link: '/trim-video-example' }
         ]
+      },
+      {
+        text: 'Self-hosting',
+        items: [
+          { text: 'Docker Compose', link: '/docker-compose' }
+        ]
       }
     ],
 
