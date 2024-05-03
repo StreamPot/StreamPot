@@ -1,12 +1,26 @@
-import fetch from 'node-fetch'
+import fetch from 'cross-fetch'
 
-export class StreamPot {
+type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
+
+type Upload = {
+    key: string
+    publicUrl: string
+}
+
+type JobEntity = {
+    id: number
+    status: JobStatus
+    output_url?: Upload[]
+    created_at: string
+}
+
+export default class StreamPot {
     protected secret: string
     protected baseUrl: string
 
     protected actions: any[] = []
 
-    constructor({ secret, baseUrl = 'http://localhost:3000' }) {
+    constructor({ secret, baseUrl = 'http://localhost:3000' }: { secret: string, baseUrl?: string }) {
         this.secret = secret
         this.baseUrl = baseUrl
     }
@@ -16,13 +30,8 @@ export class StreamPot {
     }
 
     async checkStatus(jobId: string) {
-        try {
-            const res = await fetch(`${this.baseUrl}/jobs/${jobId}`)
-            const data = await res.json()
-            return data
-        } catch (error) {
-            console.error(error)
-        }
+        const res = await fetch(`${this.baseUrl}/jobs/${jobId}`)
+        return await res.json()
     }
 
     input(url: string) {
@@ -78,8 +87,6 @@ export class StreamPot {
     }
 
     async run() {
-        console.log(this.actions);
-
         const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
             headers: {
@@ -89,6 +96,6 @@ export class StreamPot {
             body: JSON.stringify(this.actions)
         })
 
-        return response.json()
+        return response.json() as Promise<JobEntity>
     }
 }
