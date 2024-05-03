@@ -1,3 +1,5 @@
+-- Up Migration
+
 create table jobs (
   id serial primary key,
   type varchar(255) not null,
@@ -8,3 +10,6 @@ create table jobs (
   created_at timestamp default current_timestamp,
   completed_at timestamp 
 );
+
+-- Down Migration
+DROP TABLE jobs;

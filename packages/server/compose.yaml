@@ -19,7 +19,7 @@ services:
     #   - "traefik.http.services.go.loadbalancer.server.port=80"
     environment:
       NODE_ENV: production
-      PG_CONNECTION_STRING: postgres://postgres:example@db:5432/example
+      DATABASE_URL: postgres://postgres:example@db:5432/example
       REDIS_CONNECTION_STRING: redis://redis:6379
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
@@ -41,7 +41,6 @@ services:
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./migrations:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_DB=example
       - POSTGRES_PASSWORD=example

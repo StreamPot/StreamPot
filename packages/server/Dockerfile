@@ -44,4 +44,4 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD pnpm start
+ENTRYPOINT ["./entrypoint.sh"]

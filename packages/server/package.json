@@ -3,7 +3,11 @@
     "scripts": {
         "dev": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec NODE_ENV=development 'ts-node' src/main.ts",
         "start": "NODE_ENV=production ts-node src/main.ts",
-        "test": "vitest"
+        "test": "vitest",
+        "migrate:up": "node-pg-migrate up",
+        "migrate:down": "node-pg-migrate down",
+        "migrate:redo": "node-pg-migrate redo",
+        "migrate:create": "node-pg-migrate create"
     },
     "dependencies": {
         "@fastify/type-provider-typebox": "^4.0.0",
@@ -18,6 +22,7 @@
         "dotenv": "^16.4.5",
         "fastify": "^4.26.2",
         "fluent-ffmpeg": "^2.1.2",
+        "node-pg-migrate": "^7.2.2",
         "pg": "^8.11.5",
         "ts-node": "^10.9.2"
     },
