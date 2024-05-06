@@ -2,7 +2,8 @@ import StreamPot from './StreamPot';
 import { StreamPotOptions } from "./types";
 
 /**
- * For user's convenience, this class returns a new StreamPot instance after the first method call.
+ * This is done to return a new instance of StreamPot after the first method call.
+ * (for convenience in chaining, to avoid having to re-create a new instance each time)
  */
 export default class StreamPotFactory extends StreamPot {
     constructor(options: StreamPotOptions) {
