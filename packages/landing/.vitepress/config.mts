@@ -2,14 +2,15 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "StreamPot (alpha)",
+  title: "StreamPot",
   description: "Easiest way to convert media",
   head: [['link', { rel: 'icon', href: '../favicon.ico' }]],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/examples' }
+      { text: 'Home 🏠', link: '/' },
+      { text: 'Specification 📄', link: '/methods' },
+      { text: 'Examples 🌟', link: '/examples' },
     ],
 
     sidebar: [
@@ -17,13 +18,17 @@ export default defineConfig({
         text: 'Introduction',
         items: [
           { text: 'Getting Started', link: '/getting-started' },
+          {
+            text: 'Available Methods',
+            link: '/methods',
+          },
         ],
       },
       {
         text: 'Examples',
         items: [
-          // { text: 'Markdown Examples', link: '/examples' },
-          { text: 'Trim a video', link: '/trim-video-example' }
+          { text: '✄ Trim a video', link: 'examples#trim-a-video' },
+          { text: '🔄 Convert a video', link: '/convert-video' }
         ]
       },
       {
