@@ -1,6 +1,20 @@
-import { AudioVideoFilter, FilterSpecification } from './filters.ts';
+import { AudioVideoFilter, FilterSpecification } from "./filters";
 
-  export default class StreamPot {
+type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
+
+type Upload = {
+    key: string
+    publicUrl: string
+}
+
+type JobEntity = {
+    id: number
+    status: JobStatus
+    output_url?: Upload[]
+    created_at: string
+}
+
+export default class StreamPot {
     protected secret: string;
     protected baseUrl: string;
     protected actions: any[] = [];
@@ -10,8 +24,21 @@ import { AudioVideoFilter, FilterSpecification } from './filters.ts';
         this.baseUrl = baseUrl;
     }
 
-    protected addAction(name: string, value: any = undefined) {
-        this.actions.push({ name, value });
+    async run(): Promise<JobEntity> {
+        const response = await fetch(`${this.baseUrl}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${this.secret}`
+            },
+            body: JSON.stringify(this.actions)
+        })
+
+        return response.json()
+    }
+
+    protected addAction(name: string, ...values: any) {
+        this.actions.push({ name, values });
     }
 
     public mergeAdd(source: string) {
@@ -174,22 +201,22 @@ import { AudioVideoFilter, FilterSpecification } from './filters.ts';
         return this;
     }
 
-    public withAudioFilter(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public withAudioFilter(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('withAudioFilter', filters);
         return this;
     }
 
-    public withAudioFilters(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public withAudioFilters(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('withAudioFilters', filters);
         return this;
     }
 
-    public audioFilter(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public audioFilter(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('audioFilter', filters);
         return this;
     }
 
-    public audioFilters(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public audioFilters(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('audioFilters', filters);
         return this;
     }
@@ -224,22 +251,22 @@ import { AudioVideoFilter, FilterSpecification } from './filters.ts';
         return this;
     }
 
-    public withVideoFilter(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public withVideoFilter(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('withVideoFilter', filters);
         return this;
     }
 
-    public withVideoFilters(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public withVideoFilters(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('withVideoFilters', filters);
         return this;
     }
 
-    public videoFilter(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public videoFilter(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('videoFilter', filters);
         return this;
     }
 
-    public videoFilters(filters: string | string[] | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").AudioVideoFilter[]) {
+    public videoFilters(filters: string | string[] | AudioVideoFilter[]) {
         this.addAction('videoFilters', filters);
         return this;
     }
@@ -504,172 +531,52 @@ import { AudioVideoFilter, FilterSpecification } from './filters.ts';
         return this;
     }
 
-    public addInputOption(options: string[]) {
+    public addInputOption(...options: string[] | [string[]]) {
         this.addAction('addInputOption', options);
         return this;
     }
 
-    public addInputOption(options: string[]) {
-        this.addAction('addInputOption', options);
-        return this;
-    }
-
-    public addInputOptions(options: string[]) {
-        this.addAction('addInputOptions', options);
-        return this;
-    }
-
-    public addInputOptions(options: string[]) {
-        this.addAction('addInputOptions', options);
-        return this;
-    }
-
-    public withInputOption(options: string[]) {
+    public withInputOption(...options: string[] | [string[]]) {
         this.addAction('withInputOption', options);
         return this;
     }
 
-    public withInputOption(options: string[]) {
-        this.addAction('withInputOption', options);
-        return this;
-    }
-
-    public withInputOptions(options: string[]) {
-        this.addAction('withInputOptions', options);
-        return this;
-    }
-
-    public withInputOptions(options: string[]) {
-        this.addAction('withInputOptions', options);
-        return this;
-    }
-
-    public inputOption(options: string[]) {
+    public inputOption(...options: string[] | [string[]]) {
         this.addAction('inputOption', options);
         return this;
     }
 
-    public inputOption(options: string[]) {
-        this.addAction('inputOption', options);
-        return this;
-    }
-
-    public inputOptions(options: string[]) {
-        this.addAction('inputOptions', options);
-        return this;
-    }
-
-    public inputOptions(options: string[]) {
-        this.addAction('inputOptions', options);
-        return this;
-    }
-
-    public addOutputOption(options: string[]) {
+    public addOutputOption(...options: string[] | [string[]]) {
         this.addAction('addOutputOption', options);
         return this;
     }
 
-    public addOutputOption(options: string[]) {
-        this.addAction('addOutputOption', options);
-        return this;
-    }
-
-    public addOutputOptions(options: string[]) {
-        this.addAction('addOutputOptions', options);
-        return this;
-    }
-
-    public addOutputOptions(options: string[]) {
-        this.addAction('addOutputOptions', options);
-        return this;
-    }
-
-    public addOption(options: string[]) {
+    public addOption(...options: string[] | [string[]]) {
         this.addAction('addOption', options);
         return this;
     }
 
-    public addOption(options: string[]) {
-        this.addAction('addOption', options);
-        return this;
-    }
-
-    public addOptions(options: string[]) {
-        this.addAction('addOptions', options);
-        return this;
-    }
-
-    public addOptions(options: string[]) {
-        this.addAction('addOptions', options);
-        return this;
-    }
-
-    public withOutputOption(options: string[]) {
+    public withOutputOption(...options: string[] | [string[]]) {
         this.addAction('withOutputOption', options);
         return this;
     }
 
-    public withOutputOption(options: string[]) {
-        this.addAction('withOutputOption', options);
-        return this;
-    }
-
-    public withOutputOptions(options: string[]) {
-        this.addAction('withOutputOptions', options);
-        return this;
-    }
-
-    public withOutputOptions(options: string[]) {
-        this.addAction('withOutputOptions', options);
-        return this;
-    }
-
-    public withOption(options: string[]) {
+    public withOption(...options: string[] | [string[]]) {
         this.addAction('withOption', options);
         return this;
     }
 
-    public withOption(options: string[]) {
-        this.addAction('withOption', options);
-        return this;
-    }
-
-    public withOptions(options: string[]) {
-        this.addAction('withOptions', options);
-        return this;
-    }
-
-    public withOptions(options: string[]) {
-        this.addAction('withOptions', options);
-        return this;
-    }
-
-    public outputOption(options: string[]) {
+    public outputOption(...options: string[] | [string[]]) {
         this.addAction('outputOption', options);
         return this;
     }
 
-    public outputOption(options: string[]) {
-        this.addAction('outputOption', options);
-        return this;
-    }
-
-    public outputOptions(options: string[]) {
-        this.addAction('outputOptions', options);
-        return this;
-    }
-
-    public outputOptions(options: string[]) {
-        this.addAction('outputOptions', options);
-        return this;
-    }
-
-    public filterGraph(spec: string | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").FilterSpecification | (string | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").FilterSpecification)[], map: string | string[] | undefined) {
+    public filterGraph(spec: string | FilterSpecification | (string | FilterSpecification)[], map: string | string[] | undefined) {
         this.addAction('filterGraph', spec, map);
         return this;
     }
 
-    public complexFilter(spec: string | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").FilterSpecification | (string | import("/Users/ostapbrehin/code/streampot/packages/client/src/filters").FilterSpecification)[], map: string | string[] | undefined) {
+    public complexFilter(spec: string | FilterSpecification | (string | FilterSpecification)[], map: string | string[] | undefined) {
         this.addAction('complexFilter', spec, map);
         return this;
     }
