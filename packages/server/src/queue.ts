@@ -72,7 +72,7 @@ async function runActions(payload: FfmpegActionsRequestType, id: number) {
     for (const action of payload) {
         const methodName = action.name as keyof FfmpegCommand;
         if (allowedActions.includes(methodName)) {
-            safeFfmpegCall(ffmpegCommand, methodName, [action.value]); // Wrap action.value in an array
+            safeFfmpegCall(ffmpegCommand, methodName, [...action.value]); // Wrap action.value in an array
         }
     }
 
