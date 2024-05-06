@@ -1,31 +1,23 @@
 import fetch from 'cross-fetch';
 import { AudioVideoFilter, FilterSpecification } from "./filters";
-
-type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
-
-type Upload = {
-    key: string
-    publicUrl: string
-}
-
-type JobEntity = {
-    id: number
-    status: JobStatus
-    output_url?: Upload[]
-    created_at: string
-}
+import { JobEntity, StreamPotOptions } from "./types";
 
 export default class StreamPot {
     protected secret: string;
     protected baseUrl: string;
     protected actions: any[] = [];
 
-    constructor({ secret, baseUrl = 'http://localhost:3000' }: { secret: string, baseUrl?: string }) {
+    constructor({ secret, baseUrl = 'http://localhost:3000' }: StreamPotOptions) {
         this.secret = secret;
         this.baseUrl = baseUrl;
     }
 
-    async run(): Promise<JobEntity> {
+    public async checkStatus(jobId: string) {
+        const res = await fetch(`${this.baseUrl}/jobs/${jobId}`)
+        return await res.json()
+    }
+
+    public async run(): Promise<JobEntity> {
         const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
             headers: {
@@ -39,7 +31,7 @@ export default class StreamPot {
     }
 
     protected addAction(name: string, ...values: any) {
-        this.actions.push({ name, values });
+        this.actions.push({ name, value: values });
     }
 
     public mergeAdd(source: string) {
