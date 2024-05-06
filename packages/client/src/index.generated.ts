@@ -1,3 +1,4 @@
+import fetch from 'cross-fetch';
 import { AudioVideoFilter, FilterSpecification } from "./filters";
 
 type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
