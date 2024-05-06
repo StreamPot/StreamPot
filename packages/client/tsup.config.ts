@@ -11,7 +11,7 @@ export const tsup: Options = {
   minify: false,
   bundle: true,
   skipNodeModulesBundle: true,
-  entryPoints: ["src/index.ts"],
+  entry: ["src/index.generated.ts"],
   watch: env === "development",
   target: "node20",
   treeshake: true,
