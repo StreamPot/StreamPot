@@ -106,13 +106,13 @@ function makePayloadPathsSafe(basePath: string, payload: FfmpegActionsRequestTyp
                 return action;
             }
 
-            const safeFileName = `${basePath}/${randomifyFileName(action.value)}`;
+            const safeFileName = `${basePath}/${randomifyFileName(action.value[0])}`;
 
-            preservedPaths.set(action.value, safeFileName);
+            preservedPaths.set(action.value[0], safeFileName);
 
             return {
                 name: action.name,
-                value: safeFileName
+                value: [safeFileName]
             }
         }),
         preservedPaths: preservedPaths,
