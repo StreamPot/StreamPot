@@ -118,7 +118,7 @@ function makePayloadPathsSafe(basePath: string, payload: FfmpegActionsRequestTyp
     }
 }
 
-videoQueue.process(async (job: { data: QueueJob }) => {
+videoQueue.process(Number(process.env.QUEUE_CONCURRENCY) || 1, async (job: { data: QueueJob }) => {
     try {
         const entity = await getJob(job.data.entityId)
 
