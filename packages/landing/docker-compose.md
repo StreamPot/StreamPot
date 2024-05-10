@@ -66,4 +66,4 @@ And run:
 docker compose up
 ```
 
-The app should be running at `127.0.0.1:3000`. Congrats!
+The server should be running at `127.0.0.1:3000`. Congrats!
