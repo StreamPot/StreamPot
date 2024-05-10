@@ -68,10 +68,8 @@ $ yarn add -D @streampot/server
 
 Create a new `.env` file:
 ```shell
-NODE_ENV=production
 DATABASE_URL=postgres://postgres:example@db:5432/example
 REDIS_URL=redis://redis:6379
-
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
 # S3_REGION=
