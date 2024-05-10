@@ -52,9 +52,9 @@ function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand,
 }
 
 /**
- * Generate a random file name preserving the extension 
+ * Generate a random file name preserving the extension
  */
-function randomifyFileName(fileName: string) {
+function randomizeFileName(fileName: string) {
     const extension = fileName.split('.').pop();
 
     if (!extension) {
@@ -79,8 +79,7 @@ async function runActions(payload: FfmpegActionsRequestType, id: number) {
     return new Promise((resolve, reject) => {
         ffmpegCommand.on('end', resolve)
         ffmpegCommand.on('error', reject)
-        ffmpegCommand
-            .run()
+        ffmpegCommand.run()
     })
 }
 
@@ -106,7 +105,7 @@ function makePayloadPathsSafe(basePath: string, payload: FfmpegActionsRequestTyp
                 return action;
             }
 
-            const safeFileName = `${basePath}/${randomifyFileName(action.value[0])}`;
+            const safeFileName = `${basePath}/${randomizeFileName(action.value[0])}`;
 
             preservedPaths.set(action.value[0], safeFileName);
 
@@ -133,32 +132,32 @@ videoQueue.process(async (job: { data: QueueJob }) => {
         const { payload, preservedPaths } = makePayloadPathsSafe(baseDir, entity.payload);
         await runActions(payload, job.data.entityId)
 
-        updateJobStatus(entity.id, JobStatus.Uploading)
+        await updateJobStatus(entity.id, JobStatus.Uploading)
 
-        const uploads = await Promise.all([...preservedPaths].map(async ([originalPath, safePath]) => {
-            const remoteFileName = randomifyFileName(safePath.split('/').pop() as string)
+        const uploads = await Promise.all([...preservedPaths]
+            .map(async ([originalPath, safePath]) => {
+                const remoteFileName = randomizeFileName(safePath.split('/').pop() as string)
 
-            const upload: any = await uploadFile({
-                localFilePath: safePath,
-                remoteFileName: remoteFileName,
-            })
+                await uploadFile({
+                    localFilePath: safePath,
+                    remoteFileName: remoteFileName,
+                });
 
-            return {
-                ...upload,
-                path: originalPath,
-                publicUrl: await getPublicUrl(remoteFileName)
-            }
-        }));
-
-        fsPromises.rm(baseDir, { recursive: true });
+                return {
+                    path: originalPath,
+                    public_url: await getPublicUrl(remoteFileName)
+                }
+            }));
 
         if (uploads.length === 0) {
             throw new Error('No files uploaded')
         }
-        markJobComplete(job.data.entityId, uploads)
+
+        await markJobComplete(job.data.entityId, uploads)
+        await fsPromises.rm(baseDir, { recursive: true });
     } catch (error: any) {
         console.error(error)
-        updateJobStatus(job.data.entityId, JobStatus.Failed)
+        await updateJobStatus(job.data.entityId, JobStatus.Failed)
     }
 })
 

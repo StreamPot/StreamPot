@@ -1,8 +1,8 @@
 type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
 
 type Upload = {
-    key: string
-    publicUrl: string
+    path: string
+    public_url: string
 }
 
 export type JobEntity = {
