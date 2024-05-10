@@ -75,4 +75,32 @@ while (true) {
 }
 ```
 
+## Convert a video
+
+Here's how you can convert a video from one format to another:
+
+```js
+client.input('https://your-video.mp4').output('output.mkv').run()
+```
+
+## Concatenate different videos
+
+Here's how you can concatenate two different videos by using the `concat` and `scale` filters:
+
+```js
+const VIDEO1 = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4";
+const VIDEO2 = 'https://download.samplelib.com/mp4/sample-5s.mp4';
+
+client
+  .input(VIDEO1)
+  .input(VIDEO2)
+  .complexFilter([
+    // Scale first video and set SAR
+    '[0:v]scale=1920:1080,setsar=1[v0]',
+    // Concat filter
+    '[v0][1:v]concat=n=2:v=1:a=0'
+  ])
+  .output('merged.mp4')
+```
+
 If you have questions, please feel free to [open an issue in our repo](https://github.com/jackbridger/streampot/issues/new)

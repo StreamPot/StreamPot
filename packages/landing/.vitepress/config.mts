@@ -27,8 +27,9 @@ export default defineConfig({
       {
         text: 'Examples',
         items: [
-          { text: '✄ Trim a video', link: 'examples#trim-a-video' },
-          { text: '🔄 Convert a video', link: '/convert-video' }
+          { text: '✄ Trim video', link: 'examples#trim-a-video' },
+          { text: '🔄 Convert video', link: 'examples#convert-a-video' },
+          { text: '🎞️ Concatenate videos', link: 'examples#concatenate-different-videos' },
         ]
       },
       {
