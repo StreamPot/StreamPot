@@ -1,13 +1,11 @@
 import { Project } from "ts-morph";
 
 const project = new Project({
-    tsConfigFilePath: "./tsconfig.json",
+    tsConfigFilePath: "../tsconfig.json",
     addFilesFromTsConfig: true,
 });
 
-project.addSourceFileAtPath('src/filters.ts')
-
-const sourceFile = project.addSourceFileAtPath("src/index.d.ts");
+const sourceFile = project.addSourceFileAtPath("./index.d.ts");
 
 sourceFile.addImportDeclarations([
     {
@@ -18,7 +16,7 @@ sourceFile.addImportDeclarations([
 
 const classDeclaration = sourceFile.getClassOrThrow("StreamPot");
 
-const output = project.createSourceFile("src/index.generated.ts", "", { overwrite: true });
+const output = project.createSourceFile("index.generated.ts", "", { overwrite: true });
 
 output.addStatements(`export default class StreamPot {
     protected secret: string;

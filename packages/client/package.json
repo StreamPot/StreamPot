@@ -1,6 +1,6 @@
 {
     "name": "@streampot/client",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "author": "Jack Bridger",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
@@ -10,7 +10,7 @@
     ],
     "scripts": {
         "build": "cross-env NODE_ENV=production tsup-node",
-        "generate": "node generate.mjs",
+        "generate": "node experimental-generator/generate.mjs",
         "test": "vitest"
     },
     "devDependencies": {

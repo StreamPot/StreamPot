@@ -1,5 +1,4 @@
-import StreamPot from './StreamPot';
-import { StreamPotOptions } from "./types";
+import StreamPot, { StreamPotOptions } from './StreamPot';
 
 /**
  * This is done to return a new instance of StreamPot after the first method call.
