@@ -11,8 +11,6 @@ ARG NODE_VERSION=20.10.0
 
 FROM node:${NODE_VERSION}-alpine
 
-# Use production node environment by default.
-ENV NODE_ENV production
 
 # Install pnpm.
 ENV PNPM_HOME="/pnpm"
@@ -32,13 +30,22 @@ WORKDIR /usr/src/app
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
     --mount=type=cache,target=/pnpm/store \
-    pnpm install --prod --frozen-lockfile
+    pnpm install --frozen-lockfile
+
+# Copy the rest of the source files into the image.
+COPY . .
+
+# Build the application.
+RUN pnpm build
+
+# Remove development dependencies.
+RUN pnpm install --production
 
 # Run the application as a non-root user.
 USER node
 
-# Copy the rest of the source files into the image.
-COPY . .
+# Use production node environment
+ENV NODE_ENV production
 
 # Expose the port that the application listens on.
 EXPOSE 3000

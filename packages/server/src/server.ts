@@ -1,10 +1,15 @@
-import Fastify, { FastifyRequest } from 'fastify'
-import dotenv from 'dotenv'
+import Fastify from 'fastify'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
-import { JobEntityId, JobStatus, QueueJob, Transformation, FfmpegActionsRequest, type FfmpegActionsRequestType } from './types'
+import {
+    JobEntityId,
+    JobStatus,
+    QueueJob,
+    Transformation,
+    FfmpegActionsRequest,
+    type FfmpegActionsRequestType
+} from './types'
 import { addJob, getAllJobs, getJob } from './db/jobs'
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
 const app = Fastify({
     logger: true
@@ -13,9 +18,6 @@ const app = Fastify({
 app.post<{ Body: FfmpegActionsRequestType }>('/', {
     schema: {
         body: FfmpegActionsRequest,
-        // response: {
-        //     200: User
-        // },
     },
 }, async (request, reply) => {
     const entity = await addJob({
@@ -35,12 +37,12 @@ app.post<{ Body: FfmpegActionsRequestType }>('/', {
 
 app.get<{ Params: { id: JobEntityId } }>('/jobs/:id', async (request, reply) => {
     const job = await getJob(request.params.id)
+
     if (!job) {
         reply.code(404)
-        return {
-            message: 'Job not found'
-        }
+        return { message: 'Job not found' }
     }
+
     return job
 })
 
@@ -48,16 +50,4 @@ app.get('/jobs', async () => {
     return await getAllJobs()
 })
 
-const start = async () => {
-    try {
-        if (process.env.NODE_ENV === 'development') {
-            await app.listen({ port: 3000, host: 'localhost' })
-        }
-        else await app.listen({ port: 3000, host: "0.0.0.0" })
-
-    } catch (err) {
-        app.log.error(err)
-        process.exit(1)
-    }
-}
-start()
+export default app

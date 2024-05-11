@@ -51,15 +51,15 @@ For examples on how to use the client, visit the [examples page](/examples).
 ::: code-group
 
 ```sh [npm]
-$ npm add -D @streampot/server
+$ npm add -g @streampot/server
 ```
 
 ```sh [pnpm]
-$ pnpm add -D @streampot/server
+$ pnpm add -g @streampot/server
 ```
 
 ```sh [yarn]
-$ yarn add -D @streampot/server
+$ yarn global add @streampot/server
 ```
 
 :::
@@ -68,10 +68,8 @@ $ yarn add -D @streampot/server
 
 Create a new `.env` file:
 ```shell
-NODE_ENV=production
 DATABASE_URL=postgres://postgres:example@db:5432/example
 REDIS_URL=redis://redis:6379
-
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
 # S3_REGION=
@@ -79,7 +77,13 @@ S3_BUCKET_NAME=
 S3_ENDPOINT=
 ```
 
-And run the following command:
+Before starting the server, run this command to set-up the database tables:
+
+```sh
+$ streampot migrate
+```
+
+Now you can start the server:
 
 ```sh
 $ streampot start --port=3000

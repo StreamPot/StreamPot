@@ -1,5 +1,5 @@
 import Queue from "bull";
-import fs, { promises as fsPromises } from 'fs';
+import fs, { promises as fsPromises } from 'node:fs';
 import { JobStatus, QueueJob, type FfmpegActionsRequestType } from "./types";
 import ffmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { getJob, markJobComplete, updateJobStatus } from "./db/jobs";
@@ -8,7 +8,7 @@ import { getPublicUrl, uploadFile } from "./storage";
 const videoQueue = new Queue("video transcoding", {
     redis: {
         host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT as string),
+        port: parseInt(process.env.REDIS_PORT as string) || 6379,
         password: process.env.REDIS_PASSWORD,
     },
 });

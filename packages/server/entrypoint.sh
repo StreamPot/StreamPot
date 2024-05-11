@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Run migrations
-pnpm migrate:up
+./dist/cli.js migrate
 
 # Start the server
-pnpm start
+./dist/cli.js serve --port=3000 --host=0.0.0.0
