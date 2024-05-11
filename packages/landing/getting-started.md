@@ -77,7 +77,13 @@ S3_BUCKET_NAME=
 S3_ENDPOINT=
 ```
 
-And run the following command:
+Before starting the server, run this command to set-up the database tables:
+
+```sh
+$ streampot migrate
+```
+
+Now you can start the server:
 
 ```sh
 $ streampot start --port=3000
