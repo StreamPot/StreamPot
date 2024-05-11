@@ -39,7 +39,7 @@ COPY . .
 RUN pnpm build
 
 # Remove development dependencies.
-RUN pnpm install --production
+RUN pnpm prune --prod
 
 # Run the application as a non-root user.
 USER node

@@ -3,7 +3,7 @@
 StreamPot consist of two parts:
 
 - `@streampot/client` is a JavaScript library that you can use to interact with the server. 
-- `@streampot/server` is a Node.js backend you can host on your own server.
+- `@streampot/server` is a CLI tool that you can use to launch the server.
 
 ## Setting up the client
 
