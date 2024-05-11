@@ -51,15 +51,15 @@ For examples on how to use the client, visit the [examples page](/examples).
 ::: code-group
 
 ```sh [npm]
-$ npm add -D @streampot/server
+$ npm add -g @streampot/server
 ```
 
 ```sh [pnpm]
-$ pnpm add -D @streampot/server
+$ pnpm add -g @streampot/server
 ```
 
 ```sh [yarn]
-$ yarn add -D @streampot/server
+$ yarn global add @streampot/server
 ```
 
 :::
