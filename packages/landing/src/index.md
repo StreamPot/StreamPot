@@ -12,7 +12,7 @@ hero:
   actions:
     - theme: brand
       text: Quickstart
-      link: /getting-started
+      link: /installation
     - theme: alt
       text: Examples
       link: /examples
