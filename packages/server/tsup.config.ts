@@ -4,7 +4,7 @@ const env = process.env.NODE_ENV;
 
 export const tsup: Options = {
     splitting: true,
-//   sourcemap: env === "development",
+    sourcemap: env === "development",
     clean: true,
     dts: true,
     format: ["cjs", "esm"],
@@ -12,7 +12,7 @@ export const tsup: Options = {
     bundle: true,
     skipNodeModulesBundle: true,
     entry: [
-        "src/index.ts",
+        "src/server.ts",
         "src/cli.ts"
     ],
     watch: env === "development",

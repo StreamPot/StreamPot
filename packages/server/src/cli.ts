@@ -8,7 +8,7 @@ import * as path from "node:path";
 
 config({ path: `.env.${process.env.NODE_ENV}` });
 
-const migrationConfig = {
+const migrationsConfig = {
     databaseUrl: process.env.DATABASE_URL,
     dir: path.join(__dirname, '../migrations'),
     migrationsTable: 'migrations',
@@ -38,7 +38,7 @@ program.command("migrate")
     .action(async () => {
         process.stdout.write(`Running migrations...\n`);
 
-        await pgMigrate({ ...migrationConfig, direction: 'up' })
+        await pgMigrate({ ...migrationsConfig, direction: 'up' })
 
         process.exit(0);
     });
@@ -48,7 +48,7 @@ program.command('migrate:down')
     .action(async () => {
         process.stdout.write(`Rolling back migrations...\n`);
 
-        await pgMigrate({ ...migrationConfig, direction: 'down' })
+        await pgMigrate({ ...migrationsConfig, direction: 'down' })
 
         process.exit(0);
     });
