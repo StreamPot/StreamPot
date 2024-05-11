@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-import { program, OptionValues } from "commander";
+import { Command, OptionValues } from "commander";
 import * as packageJson from "../package.json";
 import server from "./server";
 import pgMigrate from 'node-pg-migrate'
 import { config } from "dotenv";
 import * as path from "node:path";
-
-config({ path: `.env.${process.env.NODE_ENV}` });
 
 const migrationsConfig = {
     databaseUrl: process.env.DATABASE_URL,
@@ -15,10 +13,16 @@ const migrationsConfig = {
     verbose: true,
 }
 
+const program = new Command()
+
 program
     .name("streampot")
     .version(packageJson.version)
-    .description("CLI for the StreamPot server");
+    .description("CLI for the StreamPot server")
+    .option("-e, --env <env>", "Environment file", ".env")
+    .hook('preSubcommand', (thisCommand) => {
+        config({ path: thisCommand.opts().env });
+    })
 
 program.command("serve")
     .description("Start the server")
