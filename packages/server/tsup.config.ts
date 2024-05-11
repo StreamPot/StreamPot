@@ -13,7 +13,7 @@ export const tsup: Options = {
     skipNodeModulesBundle: true,
     entry: [
         "src/server.ts",
-        "src/cli.ts"
+        "src/cli/index.ts"
     ],
     watch: env === "development",
     target: "node20",

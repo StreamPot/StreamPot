@@ -3,8 +3,11 @@
     "description": "A CLI tool for launching a StreamPot server",
     "version": "0.0.2",
     "bin": {
-        "streampot": "dist/cli.js"
+        "streampot": "dist/cli/index.js"
     },
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "build": "cross-env NODE_ENV=production tsup",
         "dev": "cross-env NODE_ENV=development tsup",
