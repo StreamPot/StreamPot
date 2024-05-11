@@ -6,9 +6,8 @@
     },
     "scripts": {
         "build": "tsup",
-        "cli:dev": "tsup --watch",
-        "dev": "nodemon src/main.ts",
-        "start": "NODE_ENV=production ts-node src/main.ts",
+        "dev": "tsup --watch",
+        "start": "NODE_ENV=production dist/cli.js serve",
         "test": "vitest",
         "migrate:up": "node-pg-migrate up",
         "migrate:down": "node-pg-migrate down",
