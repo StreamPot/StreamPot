@@ -29,7 +29,7 @@ program.command("serve")
     .option("-p, --port <port>", "Port to listen on", "3000")
     .option("-h, --host <host>", "Host to listen on", "0.0.0.0")
     .action(async (options: OptionValues) => {
-        process.stdout.write(`Starting StreamPot server on ${options.host}:${options.port}...\n`);
+        process.stdout.write(`Starting StreamPot server on http://${options.host}:${options.port}\n`);
 
         await server.listen({
             port: parseInt(options.port),
