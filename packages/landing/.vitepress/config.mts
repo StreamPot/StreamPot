@@ -9,7 +9,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home 🏠', link: '/' },
-      { text: 'Specification 📄', link: '/methods' },
+      // { text: 'Specification 📄', link: '/methods' },
       { text: 'Examples 🌟', link: '/examples' },
     ],
 
@@ -38,7 +38,7 @@ export default defineConfig({
           { text: '🎞️ Concatenate videos', link: 'examples#concatenate-different-videos' },
           { text: '🎥 Watermark video', link: 'examples#add-watermark' },
           { text: '🔊 Add audio to video', link: 'examples#add-audio-to-video' },
-{ text: '🎚️ Change volume', link: 'examples#change-volume' },
+          { text: '🎚️ Change volume', link: 'examples#change-volume' },
           { text: '🎨 Change resolution', link: 'examples#change-resolution' },
           { text: '🎞️ Crop video', link: 'examples#crop-video' },
           { text: '🔄 Convert audio', link: 'examples#convert-audio' },
