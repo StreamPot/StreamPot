@@ -6,6 +6,13 @@ export default defineConfig({
   description: "Easiest way to convert media",
   head: [['link', { rel: 'icon', href: '../favicon.ico' }]],
   srcDir: 'src',
+  head: [
+    [
+      'script',
+      {},
+      `window.$crisp=[];window.CRISP_WEBSITE_ID="3f4d50bb-b8a8-4fa5-ae8d-80e61b99ad9a";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
+    ],
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
