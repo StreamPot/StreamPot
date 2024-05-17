@@ -1,12 +1,14 @@
 import { defineConfig } from 'vitepress'
 
+const DESCRIPTION = 'Open source video transformation API'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "StreamPot",
-  description: "Easiest way to convert media",
-  head: [['link', { rel: 'icon', href: '../favicon.ico' }]],
+  description: DESCRIPTION,
   srcDir: 'src',
   head: [
+    ['link', { rel: 'icon', href: '../favicon.ico' }],
     [
       'script',
       {},
@@ -14,8 +16,17 @@ export default defineConfig({
     ],
     [
       'script',
-      {async: '', defer: '', src: 'https://scripts.simpleanalyticscdn.com/latest.js'},
+      { async: '', defer: '', src: 'https://scripts.simpleanalyticscdn.com/latest.js' },
     ],
+    // social media meta tags
+    ['meta', { property: 'og:title', content: 'StreamPot' }],
+    ['meta', { property: 'og:description', content: DESCRIPTION }],
+    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { property: 'og:url', content: 'https://streampot.io' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'StreamPot' }],
+    ['meta', { name: 'twitter:description', content: DESCRIPTION }],
+    ['meta', { name: 'twitter:image', content: '/og-image.png' }],
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
