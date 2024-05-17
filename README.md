@@ -32,15 +32,14 @@ Note: You should only run this from your server.
 
 ### Install the client library
 
-```pnpm i streampot```
+```pnpm i @streampot/client```
 
 ### Initialise the client & submit a job.
 ```js
-import StreamPot from 'streampot'
+import StreamPot from '@streampot/client'
 const EXAMPLE_VID = 'https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4'
 
 const client = new StreamPot({
-    secret: 'secret',
     baseUrl: 'http://127.0.0.1:3000', // adjust if you are serving in production
 })
 
