@@ -1,6 +1,7 @@
-# Streampot
+# StreamPot
 
-*Note: this is in the very early stages of development*
+> [!NOTE]
+> **StreamPot is still in the early stages of development, we would appreciate your feedback.**
 
 StreamPot is a project that provides scaffolding for transforming media in your app (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
 
@@ -31,15 +32,14 @@ Note: You should only run this from your server.
 
 ### Install the client library
 
-```pnpm i streampot```
+```pnpm i @streampot/client```
 
 ### Initialise the client & submit a job.
 ```js
-import StreamPot from 'streampot'
+import StreamPot from '@streampot/client'
 const EXAMPLE_VID = 'https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4'
 
 const client = new StreamPot({
-    secret: 'secret',
     baseUrl: 'http://127.0.0.1:3000', // adjust if you are serving in production
 })
 
@@ -62,3 +62,7 @@ setTimeout(async () => {
 ## Acknowledgements
 
 This project is heavily reliant on the amazing work of the ffmpeg and fluent-ffmpeg teams 
+
+## Feedback
+
+If you want to use StreamPot in your project, I'd be happy to help & improve it based on your feedback. Email me at jack@bitreach.io or [let's have a call](https://cal.com/jackbridger/30min). 
