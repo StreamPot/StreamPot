@@ -5,6 +5,7 @@ export default defineConfig({
   title: "StreamPot",
   description: "Easiest way to convert media",
   head: [['link', { rel: 'icon', href: '../favicon.ico' }]],
+  srcDir: 'src',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -15,12 +16,12 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Introduction',
+        text: 'Getting started',
         items: [
-          { text: 'Getting Started', link: '/getting-started' },
+          { text: 'Installation', link: '/installation' },
           {
-            text: 'Usage (specification)',
-            link: '/methods',
+            text: 'List of methods',
+            link: '/specification',
           },
         ],
       },
@@ -45,21 +46,21 @@ export default defineConfig({
           { text: '🔊 Extract audio', link: 'examples#extract-audio' },
           { text: '🎞️ Extract frames', link: 'examples#extract-frames' },
           { text: '🔄 Convert frames to video', link: 'examples#convert-frames-to-video' },
-          { text: '🎞️ Overlay videos', link: 'examples#overlay-videos' },
-          { text: '🎞️ Reverse video', link: 'examples#reverse-video' },
-          { text: '🎞️ Speed up video', link: 'examples#speed-up-video' },
-          { text: '🎞️ Slow down video', link: 'examples#slow-down-video' },
-          { text: '🎞️ Split video', link: 'examples#split-video' },
-          { text: '🎞️ Stitch videos', link: 'examples#stitch-videos' },
-          { text: '🎞️ Trim video', link: 'examples#trim-video' },
-          { text: '🎞️ Zoom video', link: 'examples#zoom-video' },
-          { text: '🎞️ Rotate video', link: 'examples#rotate-video' },
-          { text: '🎞️ Mirror video', link: 'examples#mirror-video' },
-          { text: '🎞️ Blur video', link: 'examples#blur-video' },
-          { text: '🎞️ Brighten video', link: 'examples#brighten-video' },
-          { text: '🎞️ Darken video', link: 'examples#darken-video' },
-          { text: '🎞️ Sharpen video', link: 'examples#sharpen-video' },
-          { text: '🎞️ Denoise video', link: 'examples#denoise-video' },
+          // { text: '🎞️ Overlay videos', link: 'examples#overlay-videos' },
+          // { text: '🎞️ Reverse video', link: 'examples#reverse-video' },
+          // { text: '🎞️ Speed up video', link: 'examples#speed-up-video' },
+          // { text: '🎞️ Slow down video', link: 'examples#slow-down-video' },
+          // { text: '🎞️ Split video', link: 'examples#split-video' },
+          // { text: '🎞️ Stitch videos', link: 'examples#stitch-videos' },
+          // { text: '🎞️ Trim video', link: 'examples#trim-video' },
+          // { text: '🎞️ Zoom video', link: 'examples#zoom-video' },
+          // { text: '🎞️ Rotate video', link: 'examples#rotate-video' },
+          // { text: '🎞️ Mirror video', link: 'examples#mirror-video' },
+          // { text: '🎞️ Blur video', link: 'examples#blur-video' },
+          // { text: '🎞️ Brighten video', link: 'examples#brighten-video' },
+          // { text: '🎞️ Darken video', link: 'examples#darken-video' },
+          // { text: '🎞️ Sharpen video', link: 'examples#sharpen-video' },
+          // { text: '🎞️ Denoise video', link: 'examples#denoise-video' },
         ]
       },
     ],

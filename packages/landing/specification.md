@@ -1,2 +1,0 @@
-## All available methods
-
