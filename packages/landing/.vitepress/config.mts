@@ -12,6 +12,10 @@ export default defineConfig({
       {},
       `window.$crisp=[];window.CRISP_WEBSITE_ID="3f4d50bb-b8a8-4fa5-ae8d-80e61b99ad9a";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
     ],
+    [
+      'script',
+      {async: '', defer: '', src: 'https://scripts.simpleanalyticscdn.com/latest.js'},
+    ],
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
