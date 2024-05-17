@@ -1,6 +1,6 @@
-# Streampot
+# StreamPot
 
-*Note: this is in the very early stages of development*
+*Note: StreamPot is still in the early stages of development, we would appreciate your feedback.*
 
 StreamPot is a project that provides scaffolding for transforming media in your app (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
 
@@ -62,3 +62,7 @@ setTimeout(async () => {
 ## Acknowledgements
 
 This project is heavily reliant on the amazing work of the ffmpeg and fluent-ffmpeg teams 
+
+## Feedback
+
+If you want to use StreamPot in your project, I'd be happy to help & improve it based on your feedback. Email me at jack@bitreach.io or [let's have a call](https://cal.com/jackbridger/30min). 
