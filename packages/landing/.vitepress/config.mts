@@ -8,7 +8,7 @@ export default defineConfig({
   description: DESCRIPTION,
   srcDir: 'src',
   head: [
-    ['link', { rel: 'icon', href: '../favicon.ico' }],
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
     [
       'script',
       {},
