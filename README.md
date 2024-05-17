@@ -1,6 +1,7 @@
 # StreamPot
 
-*Note: StreamPot is still in the early stages of development, we would appreciate your feedback.*
+> [!NOTE]
+> **StreamPot is still in the early stages of development, we would appreciate your feedback.**
 
 StreamPot is a project that provides scaffolding for transforming media in your app (e.g. trimming a video, stripping the audio from a video, transcoding a video from mp4 to webp).
 
