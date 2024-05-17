@@ -12,6 +12,7 @@ export default defineConfig({
       { text: 'Home 🏠', link: '/' },
       // { text: 'Specification 📄', link: '/methods' },
       { text: 'Examples 🌟', link: '/examples' },
+      { text: 'Contact ✉️', link: '/contact' },
     ],
 
     sidebar: [
