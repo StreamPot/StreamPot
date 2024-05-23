@@ -14,11 +14,10 @@ export async function markJobComplete(id: JobEntityId, outputUrls: object[]) {
     const completedAt = new Date();
     const serializedOutputUrls = JSON.stringify(outputUrls);
 
-    const res = await getClient().query(
+    return await getClient().query(
         'UPDATE jobs SET status = $1, completed_at = $2, output_url = $3 WHERE id = $4',
         [JobStatus.Completed, completedAt, serializedOutputUrls, id]
     );
-    return res;
 }
 
 export function updateJobStatus(id: JobEntityId, status: JobStatus) {

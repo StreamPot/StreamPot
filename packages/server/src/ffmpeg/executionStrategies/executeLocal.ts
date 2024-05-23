@@ -9,15 +9,11 @@ export async function executeLocal({ ffmpegArguments, path }: ExecutionContext):
             stdio: 'pipe',
         });
 
-        return {
-            success: true,
-            // TODO: explore why successful execution responds with stderr
-            output: execution.stdout === '' ? execution.stderr : execution.stdout,
-        }
+        // TODO: explore why successful execution responds with stderr
+        const output = execution.stdout === '' ? execution.stderr : execution.stdout;
+
+        return { success: true, output };
     } catch (error) {
-        return {
-            success: false,
-            output: error.stderr,
-        }
+        return { success: false, output: error.stderr };
     }
 }

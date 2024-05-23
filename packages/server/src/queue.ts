@@ -1,6 +1,6 @@
 import Queue from "bull";
 import { QueueJob } from "./types";
-import { getJob } from "./db/jobs";
+import { getJob } from "./db/jobsRepository";
 import processWorkflow from "./actions/processWorkflow";
 import config from "./config";
 

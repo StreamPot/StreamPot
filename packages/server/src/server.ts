@@ -9,7 +9,7 @@ import {
     FfmpegActionsRequest,
     type FfmpegActionsRequestType
 } from './types'
-import { addJob, getAllJobs, getJob } from './db/jobs'
+import { addJob, getAllJobs, getJob } from './db/jobsRepository'
 
 const app = Fastify({
     logger: true
