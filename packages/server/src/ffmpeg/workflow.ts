@@ -1,4 +1,4 @@
-import fluentFfmpeg from 'fluent-ffmpeg'
+import fluentFfmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 
 export type Workflow = WorkflowAction[]
 
@@ -25,7 +25,7 @@ interface WorkflowAction {
 /**
  * A list of methods that are allowed to be called on the ffmpeg instance.
  */
-const methods: (keyof FfmpegComman)[] = [
+const methods: (keyof FfmpegCommand)[] = [
     'mergeAdd',
     'addInput',
     'input',

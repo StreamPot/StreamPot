@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import { toCommand } from "../src/ffmpeg/workflow";
+import { toCommand, Workflow } from "../src/ffmpeg/workflow";
 
 test("workflow toCommand", async () => {
-    const workflow = [
+    const workflow: Workflow = [
         {
             name: "input",
             value: ["input.mp4"],
