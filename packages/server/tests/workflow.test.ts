@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
-import { toCommand, Workflow } from "../src/ffmpeg/workflow";
+import { toCommandArguments, Workflow } from "../src/ffmpeg/workflow";
 
-test("workflow toCommand", async () => {
+test("workflow toCommandArguments", async () => {
     const workflow: Workflow = [
         {
             name: "input",
@@ -13,7 +13,7 @@ test("workflow toCommand", async () => {
         },
     ];
 
-    const command = toCommand(workflow);
+    const command = toCommandArguments(workflow);
 
-    expect(command).toBe("-i input.mp4 -y output.mp4");
+    expect(command).toStrictEqual(["-i", "input.mp4", "-y", "output.mp4"])
 });

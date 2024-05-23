@@ -15,6 +15,7 @@
         "test": "vitest"
     },
     "dependencies": {
+        "@expo/spawn-async": "^1.7.2",
         "@fastify/type-provider-typebox": "^4.0.0",
         "@sinclair/typebox": "^0.32.20",
         "aws-sdk": "^2.1598.0",

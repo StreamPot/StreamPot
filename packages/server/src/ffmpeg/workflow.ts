@@ -3,9 +3,9 @@ import fluentFfmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 export type Workflow = WorkflowAction[]
 
 /**
- * Uses fluent-ffmpeg to build the ffmpeg command string from a workflow.
+ * Uses fluent-ffmpeg to build the ffmpeg arguments array from a workflow.
  */
-export function toCommand(workflow: Workflow): string {
+export function toCommandArguments(workflow: Workflow): string[] {
     const ffmpegInstance = fluentFfmpeg()
 
     for (const action of workflow) {
@@ -14,7 +14,7 @@ export function toCommand(workflow: Workflow): string {
         }
     }
 
-    return ffmpegInstance._getArguments().join(' ')
+    return ffmpegInstance._getArguments()
 }
 
 interface WorkflowAction {
