@@ -6,7 +6,8 @@
         "streampot": "dist/cli/index.js"
     },
     "files": [
-        "dist"
+        "dist",
+        "migrations"
     ],
     "scripts": {
         "build": "cross-env NODE_ENV=production tsup",
