@@ -13,119 +13,6 @@ const videoQueue = new Queue("video transcoding", {
     },
 });
 
-type FfmpegMethodName = keyof FfmpegCommand;
-
-const allowedActions: FfmpegMethodName[] = [
-    'mergeAdd',
-    'addInput',
-    'input',
-    'withInputFormat',
-    'inputFormat',
-    'fromFormat',
-    'withInputFps',
-    'withInputFPS',
-    'withFpsInput',
-    'withFPSInput',
-    'inputFPS',
-    'inputFps',
-    'fpsInput',
-    'FPSInput',
-    'nativeFramerate',
-    'withNativeFramerate',
-    'native',
-    'setStartTime',
-    'seekInput',
-    'loop',
-    'withNoAudio',
-    'noAudio',
-    'withAudioCodec',
-    'audioCodec',
-    'withAudioBitrate',
-    'audioBitrate',
-    'withAudioChannels',
-    'audioChannels',
-    'withAudioFrequency',
-    'audioFrequency',
-    'withAudioQuality',
-    'audioQuality',
-    'withAudioFilter',
-    'withAudioFilters',
-    'audioFilter',
-    'audioFilters',
-    'withNoVideo',
-    'noVideo',
-    'withVideoCodec',
-    'videoCodec',
-    'withVideoBitrate',
-    'videoBitrate',
-    'withVideoFilter',
-    'withVideoFilters',
-    'videoFilter',
-    'videoFilters',
-    'withOutputFps',
-    'withOutputFPS',
-    'withFpsOutput',
-    'withFPSOutput',
-    'withFps',
-    'withFPS',
-    'outputFPS',
-    'outputFps',
-    'fpsOutput',
-    'FPSOutput',
-    'fps',
-    'FPS',
-    'takeFrames',
-    'withFrames',
-    'frames',
-    'keepPixelAspect',
-    'keepDisplayAspect',
-    'keepDisplayAspectRatio',
-    'keepDAR',
-    'withSize',
-    'setSize',
-    'size',
-    'withAspect',
-    'withAspectRatio',
-    'setAspect',
-    'setAspectRatio',
-    'aspect',
-    'aspectRatio',
-    'applyAutopadding',
-    'applyAutoPadding',
-    'applyAutopad',
-    'applyAutoPad',
-    'withAutopadding',
-    'withAutoPadding',
-    'withAutopad',
-    'withAutoPad',
-    'autoPad',
-    'autopad',
-    'addOutput',
-    'output',
-    'seekOutput',
-    'seek',
-    'withDuration',
-    'setDuration',
-    'duration',
-    'toFormat',
-    'withOutputFormat',
-    'outputFormat',
-    'format',
-    'map',
-    'updateFlvMetadata',
-    'flvmeta',
-    'addInputOption',
-    'withInputOption',
-    'inputOption',
-    'addOutputOption',
-    'addOption',
-    'withOutputOption',
-    'withOption',
-    'outputOption',
-    'filterGraph',
-    'complexFilter',
-];
-
 function safeFfmpegCall(command: FfmpegCommand, methodName: keyof FfmpegCommand, values: any[]) {
     const method: Function | undefined = command[methodName];
 
@@ -151,7 +38,7 @@ function randomizeFileName(fileName: string) {
     return `${randomName}.${extension}`;
 }
 
-async function runActions(payload: FfmpegActionsRequestType, id: number) {
+async function runActions(payload: FfmpegActionsRequestType) {
     const ffmpegCommand = ffmpeg();
 
     for (const action of payload) {
@@ -212,13 +99,16 @@ videoQueue.process(Number(process.env.QUEUE_CONCURRENCY) || 1, async (job: { dat
             return;
         }
 
+        await processFFmpegActions(entity)
+
         const baseDir = getNewTmpDir();
 
         const { payload, preservedPaths } = makePayloadPathsSafe(baseDir, entity.payload);
-        await runActions(payload, job.data.entityId)
+        await runActions(payload)
 
         await updateJobStatus(entity.id, JobStatus.Uploading)
 
+        // @ts-ignore
         const uploads = await Promise.all([...preservedPaths]
             .map(async ([originalPath, safePath]) => {
                 const remoteFileName = randomizeFileName(safePath.split('/').pop() as string)
