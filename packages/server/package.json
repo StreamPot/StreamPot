@@ -13,7 +13,8 @@
         "build": "cross-env NODE_ENV=production tsup",
         "dev": "cross-env NODE_ENV=development tsup",
         "start": "cross-env NODE_ENV=production dist/cli.js serve",
-        "test": "vitest"
+        "test": "vitest",
+        "migrate": "node-pg-migrate"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.582.0",

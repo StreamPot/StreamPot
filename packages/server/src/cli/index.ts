@@ -13,8 +13,17 @@ new Command()
     .option("-e, --env <env>", "Environment file", ".env")
     .hook('preSubcommand', (thisCommand) => {
         config({ path: thisCommand.opts().env });
+        ensureEnvVariablesExist(['DATABASE_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'S3_ENDPOINT', 'S3_BUCKET_NAME']);
     })
     .addCommand(createServeCommand())
     .addCommand(createMigrateDownCommand())
     .addCommand(createMigrateCommand())
     .parse();
+
+function ensureEnvVariablesExist(names: string[]) {
+    names.forEach(name => {
+        if (!process.env[name]) {
+            throw new Error(`Missing required environment variable ${name}`);
+        }
+    });
+}

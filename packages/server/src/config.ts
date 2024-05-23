@@ -1,5 +1,3 @@
-// ensureRequiredVariablesAreSet(['DATABASE_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'S3_ENDPOINT', 'S3_BUCKET_NAME']);
-
 export default {
     databaseUrl: process.env.DATABASE_URL,
     storage: {
@@ -18,12 +16,4 @@ export default {
     },
     queueConcurrency: Number(process.env.QUEUE_CONCURRENCY) || 1,
     ffmpegStrategy: process.env.FFMPEG_STRATEGY || 'local' as 'docker' | 'local',
-}
-
-function ensureRequiredVariablesAreSet(names: string[]) {
-    names.forEach(name => {
-        if (!process.env[name]) {
-            throw new Error(`Missing required environment variable ${name}`);
-        }
-    });
 }
