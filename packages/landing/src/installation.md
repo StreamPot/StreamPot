@@ -80,7 +80,7 @@ S3_PUBLIC_DOMAIN=
 ```
 
 > [!WARNING]
-> Due to the risks involved in processing user-provided content with ffmpeg encoders, it is recommended that `ffmpeg` is run by spinning up Docker containers. 
+> Due to the risks involved in processing user-provided content with ffmpeg encoders, it is recommended that `ffmpeg` is run by spinning up on-demand Docker containers. 
 > 
 > To enable this, add the following to your `.env` file:
 > ```shell
