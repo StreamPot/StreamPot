@@ -1,5 +1,7 @@
 # Self-hosting with a Docker Compose
 
+This guide will help you set up a self-hosted StreamPot server using Docker Compose.
+
 Create a new `compose.yml`:
 
 ```yml
@@ -15,10 +17,15 @@ services:
       S3_REGION: ${S3_REGION}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
       S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_PUBLIC_DOMAIN: ${S3_PUBLIC_DOMAIN}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      FFMPEG_STRATEGY: docker
     ports:
       - "3000:3000"
+    volumes:
+      # Mount the docker socket to enable launching ffmpeg containers on-demand
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       db:
         condition: service_healthy
@@ -55,12 +62,19 @@ With the following `.env` file configuration:
 ```
 S3_ACCESS_KEY=accessKey
 S3_SECRET_KEY=secretKey
-# S3_REGION=eu-west-2
+S3_REGION=eu-west-2
 S3_BUCKET_NAME=yourBucket
 S3_ENDPOINT=https://random3423424.r2.cloudflarestorage.com
+S3_PUBLIC_DOMAIN=https://your-publicly-accessible-storage-domain.com
 ```
 
-And run:
+Pull the ffmpeg image on the system, which will be used for spinning up the ffmpeg processing containers on-demand:
+
+```shell
+docker pull linuxserver/ffmpeg 
+````
+
+And start the server:
 
 ```shell
 docker compose up
