@@ -25,7 +25,7 @@ export default class StreamPot {
     protected baseUrl: string;
     protected actions: any[] = [];
 
-    constructor({ secret, baseUrl = 'https://app.streampot.io/api/v1' }: StreamPotOptions) {
+    constructor({ secret, baseUrl = 'https://api.streampot.io/v1' }: StreamPotOptions) {
         this.secret = secret;
         this.baseUrl = baseUrl;
     }
