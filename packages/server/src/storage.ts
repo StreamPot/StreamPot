@@ -38,10 +38,5 @@ export async function uploadFile({ localFilePath, remoteFileName }: {
 }
 
 export async function getPublicUrl(key: string) {
-    const command = new GetObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: key,
-    });
-
-    return await getSignedUrl(getS3Client(), command, { expiresIn: 3600 });
+    return `https://${process.env.S3_PUBLIC_DOMAIN}/${key}`;
 }

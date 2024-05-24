@@ -1,4 +1,5 @@
 import { FfmpegActionsRequestType } from "./transformations";
+import { Asset } from "./asset";
 
 export type JobEntityId = number
 

@@ -28,6 +28,10 @@ exports.up = (pgm) => {
             type: 'varchar(255)',
             notNull: true
         },
+        url: {
+            type: 'varchar(255)',
+            notNull: true
+        },
         created_at: {
             type: 'timestamp',
             default: pgm.func('CURRENT_TIMESTAMP')

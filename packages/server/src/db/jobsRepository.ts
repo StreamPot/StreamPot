@@ -13,9 +13,9 @@ export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
 export async function markJobComplete(id: JobEntityId, assets: Asset[], output: string) {
     if (assets.length !== 0) {
         await getClient().query(
-            'INSERT INTO assets (job_id, name, stored_path) VALUES ' +
-            assets.map((_, i) => `($1, $${2 + i * 2}, $${3 + i * 2})`).join(', '),
-            [id, ...assets.flatMap(asset => [asset.name, asset.storedPath])]
+            'INSERT INTO assets (job_id, name, stored_path, url) VALUES ' +
+            assets.map((_, i) => `($1, $${2 + i * 3}, $${3 + i * 3}, $${4 + i * 3})`).join(', '),
+            [id, ...assets.flatMap(asset => [asset.name, asset.storedPath, asset.url])]
         );
     }
 

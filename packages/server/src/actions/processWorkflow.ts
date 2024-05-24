@@ -5,7 +5,7 @@ import config from "../config";
 import * as jobsRepository from "../db/jobsRepository";
 import * as fs from 'fs/promises';
 import { join } from 'node:path';
-import { uploadFile } from "../storage";
+import { getPublicUrl, uploadFile } from "../storage";
 import { v4 as uuidv4 } from 'uuid';
 
 export default async function processWorkflow(job: JobEntity) {
@@ -65,7 +65,9 @@ async function uploadEnvironment({ directory }: ExecutionEnvironment): Promise<A
 
         await uploadFile({ localFilePath, remoteFileName });
 
-        return <Asset>{ name: file, storedPath: remoteFileName };
+        const url = await getPublicUrl(remoteFileName)
+
+        return <Asset>{ name: file, url, storedPath: remoteFileName };
     });
 
     const assets = await Promise.all(uploadPromises);
