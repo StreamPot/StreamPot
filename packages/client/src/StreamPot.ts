@@ -3,15 +3,15 @@ import { AudioVideoFilter, FilterSpecification } from "./filters";
 
 export type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
 
-type Upload = {
-    path: string
-    public_url: string
+type Asset = {
+    name: string
+    url: string
 }
 
 type JobEntity = {
     id: number
     status: JobStatus
-    output_url?: Upload[]
+    assets?: Asset[]
     created_at: string
 }
 
@@ -25,14 +25,19 @@ export default class StreamPot {
     protected baseUrl: string;
     protected actions: any[] = [];
 
-    constructor({ secret, baseUrl = 'http://localhost:3000' }: StreamPotOptions) {
+    constructor({ secret, baseUrl = 'https://api.streampot.io/v1' }: StreamPotOptions) {
         this.secret = secret;
         this.baseUrl = baseUrl;
     }
 
     public async checkStatus(jobId: string) {
-        const res = await fetch(`${this.baseUrl}/jobs/${jobId}`)
-        return await res.json()
+        const response = await fetch(`${this.baseUrl}/jobs/${jobId}`, {
+            headers: {
+                Authorization: `Bearer ${this.secret}`
+            },
+        })
+
+        return await response.json()
     }
 
     public async run(): Promise<JobEntity> {

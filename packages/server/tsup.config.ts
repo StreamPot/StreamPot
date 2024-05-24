@@ -12,8 +12,8 @@ export const tsup: Options = {
     bundle: true,
     skipNodeModulesBundle: true,
     entry: [
-        "src/server.ts",
-        "src/cli/index.ts"
+        "bin/streampot.ts",
+        "src/index.ts",
     ],
     watch: env === "development",
     target: "node20",

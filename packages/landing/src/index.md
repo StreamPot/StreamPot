@@ -1,5 +1,6 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
+title: StreamPot - video transformation API
 layout: home
 
 hero:

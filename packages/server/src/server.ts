@@ -9,7 +9,7 @@ import {
     FfmpegActionsRequest,
     type FfmpegActionsRequestType
 } from './types'
-import { addJob, getAllJobs, getJob } from './db/jobs'
+import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
 
 const app = Fastify({
     logger: true
@@ -36,7 +36,7 @@ app.post<{ Body: FfmpegActionsRequestType }>('/', {
 })
 
 app.get<{ Params: { id: JobEntityId } }>('/jobs/:id', async (request, reply) => {
-    const job = await getJob(request.params.id)
+    const job = await getJobWithAssets(request.params.id)
 
     if (!job) {
         reply.code(404)

@@ -1,11 +1,33 @@
 import { defineConfig } from 'vitepress'
 
+const DESCRIPTION = 'Open source video transformation API'
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "StreamPot",
-  description: "Easiest way to convert media",
-  head: [['link', { rel: 'icon', href: '../favicon.ico' }]],
+  description: DESCRIPTION,
   srcDir: 'src',
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    [
+      'script',
+      {},
+      `window.$crisp=[];window.CRISP_WEBSITE_ID="3f4d50bb-b8a8-4fa5-ae8d-80e61b99ad9a";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();`,
+    ],
+    [
+      'script',
+      { async: '', defer: '', src: 'https://scripts.simpleanalyticscdn.com/latest.js' },
+    ],
+    // social media meta tags
+    ['meta', { property: 'og:title', content: 'StreamPot' }],
+    ['meta', { property: 'og:description', content: DESCRIPTION }],
+    ['meta', { property: 'og:image', content: '/og-image.png' }],
+    ['meta', { property: 'og:url', content: 'https://streampot.io' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'StreamPot' }],
+    ['meta', { name: 'twitter:description', content: DESCRIPTION }],
+    ['meta', { name: 'twitter:image', content: '/og-image.png' }],
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
