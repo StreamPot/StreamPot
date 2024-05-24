@@ -33,6 +33,7 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@types/dockerode": "^3.3.29",
         "@types/fluent-ffmpeg": "^2.1.24",
         "@types/node": "^20.12.7",
         "@types/pg": "^8.11.5",

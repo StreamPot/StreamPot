@@ -49,6 +49,9 @@ dependencies:
     version: 9.0.1
 
 devDependencies:
+  '@types/dockerode':
+    specifier: ^3.3.29
+    version: 3.3.29
   '@types/fluent-ffmpeg':
     specifier: ^2.1.24
     version: 2.1.24
@@ -1941,6 +1944,21 @@ packages:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
     dev: true
 
+  /@types/docker-modem@3.0.6:
+    resolution: {integrity: sha512-yKpAGEuKRSS8wwx0joknWxsmLha78wNMe9R2S3UNsVOkZded8UqOrV8KoeDXoXsjndxwyF3eIhyClGbO1SEhEg==}
+    dependencies:
+      '@types/node': 20.12.7
+      '@types/ssh2': 1.15.0
+    dev: true
+
+  /@types/dockerode@3.3.29:
+    resolution: {integrity: sha512-5PRRq/yt5OT/Jf77ltIdz4EiR9+VLnPF+HpU4xGFwUqmV24Co2HKBNW3w+slqZ1CYchbcDeqJASHDYWzZCcMiQ==}
+    dependencies:
+      '@types/docker-modem': 3.0.6
+      '@types/node': 20.12.7
+      '@types/ssh2': 1.15.0
+    dev: true
+
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
@@ -1949,6 +1967,12 @@ packages:
     resolution: {integrity: sha512-g5oQO8Jgi2kFS3tTub7wLvfLztr1s8tdXmRd8PiL/hLMLzTIAyMR2sANkTggM/rdEDAg3d63nYRRVepwBiCw5A==}
     dependencies:
       '@types/node': 20.12.7
+    dev: true
+
+  /@types/node@18.19.33:
+    resolution: {integrity: sha512-NR9+KrpSajr2qBVp/Yt5TU/rp+b5Mayi3+OlMlcg2cVCfRmcG5PWZ7S4+MG9PZ5gWBoc9Pd0BKSRViuBCRPu0A==}
+    dependencies:
+      undici-types: 5.26.5
     dev: true
 
   /@types/node@20.12.7:
@@ -1962,6 +1986,12 @@ packages:
       '@types/node': 20.12.7
       pg-protocol: 1.6.1
       pg-types: 4.0.2
+
+  /@types/ssh2@1.15.0:
+    resolution: {integrity: sha512-YcT8jP5F8NzWeevWvcyrrLB3zcneVjzYY9ZDSMAMboI+2zR1qYWFhwsyOFVzT7Jorn67vqxC0FRiw8YyG9P1ww==}
+    dependencies:
+      '@types/node': 18.19.33
+    dev: true
 
   /@types/uuid@9.0.8:
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}

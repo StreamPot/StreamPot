@@ -49,7 +49,7 @@ async function prepareExecutionEnvironment() {
 async function executeWorkflow(workflow: Workflow, directory: string): Promise<ExecutionOutcome> {
     const ffmpegArguments = toCommandArguments(workflow);
 
-    if (config.ffmpegStrategy === 'docker') {
+    if (process.env.FFMPEG_STRATEGY === 'docker') {
         return await executeDocker({ ffmpegArguments, path: directory });
     }
 
