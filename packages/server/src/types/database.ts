@@ -1,4 +1,5 @@
 import { FfmpegActionsRequestType } from "./transformations";
+import { Asset } from "./asset";
 
 export type JobEntityId = number
 
@@ -26,4 +27,5 @@ export type JobEntity = UnsavedJobEntity & {
     id: JobEntityId,
     created_at: Date,
     completed_at?: Date
+    assets?: Asset[]
 }

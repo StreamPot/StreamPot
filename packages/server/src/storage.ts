@@ -1,74 +1,42 @@
-import fs from 'fs'
-import { S3 } from 'aws-sdk';
+import fs from 'node:fs';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-let S3Client: S3 | null = null
-
-export async function downloadFile(url: string, path: string) {
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-        })
-        const buffer = await response.arrayBuffer()
-        fs.writeFileSync(path, Buffer.from(buffer))
-    }
-    catch (err: any) {
-        console.log("error downloading file")
-        console.log(err)
-    }
-}
+let s3Client: S3Client | null = null;
 
 export function getS3Client() {
-    if (S3Client) return S3Client
+    if (s3Client) {
+        return s3Client;
+    }
 
-    if (!process.env.S3_ACCESS_KEY) throw new Error('S3_ACCESS_KEY not set')
-    if (!process.env.S3_SECRET_KEY) throw new Error('S3_SECRET_KEY not set')
-    // if (!process.env.S3_REGION) throw new Error('S3_REGION not set')
-    if (!process.env.S3_BUCKET_NAME) throw new Error('S3_BUCKET_NAME not set')
-
-    return S3Client = new S3({
+    // TODO: make the ./config.ts import work inside the queue worker and change this to use the config.
+    return s3Client = new S3Client({
         endpoint: process.env.S3_ENDPOINT,
-        accessKeyId: process.env.S3_ACCESS_KEY,
-        secretAccessKey: process.env.S3_SECRET_KEY,
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_KEY,
+        },
         region: process.env.S3_REGION,
-        s3ForcePathStyle: true,
-        signatureVersion: 'v4'
+        forcePathStyle: true
     });
 }
 
-export async function uploadFile({
-    localFilePath,
-    remoteFileName,
-}: {
+export async function uploadFile({ localFilePath, remoteFileName }: {
     localFilePath: string,
     remoteFileName: string
 }) {
-    try {
-        const bucketName = process.env.S3_BUCKET_NAME
-        const fileContent = fs.readFileSync(localFilePath);
-        if (!bucketName) throw new Error('Bucket name not set')
+    const fileStream = fs.createReadStream(localFilePath);
 
-        const s3 = getS3Client()
-        const data = await s3.upload({
-            Bucket: bucketName,
-            Key: remoteFileName,
-            Body: fileContent
-        }).promise();
-        console.log(`File uploaded successfully. ${data.Location}`);
-        return data
-    } catch (err) {
-        console.error("Error uploading file: ", err);
-    }
-};
+    const command = new PutObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: remoteFileName,
+        Body: fileStream,
+        ACL: 'public-read',
+    });
+
+    return await getS3Client().send(command);
+}
 
 export async function getPublicUrl(key: string) {
-    const bucketName = process.env.S3_BUCKET_NAME
-    if (!bucketName) throw new Error('Bucket name not set')
-
-    const s3 = getS3Client()
-    const params = {
-        Bucket: bucketName,
-        Key: key,
-    };
-    const url = await s3.getSignedUrlPromise('getObject', params);
-    return url
+    return `https://${process.env.S3_PUBLIC_DOMAIN}/${key}`;
 }

@@ -2,3 +2,4 @@ export { JobStatus, JobEntityId, Transformation, UnsavedJobEntity, JobEntity } f
 export { QueueJob } from "./queue";
 export { FfmpegActionsRequest } from "./transformations";
 export type { FfmpegActionsRequestType } from "./transformations";
+export type { Asset } from "./asset";

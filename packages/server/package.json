@@ -1,35 +1,46 @@
 {
     "name": "@streampot/server",
     "description": "A CLI tool for launching a StreamPot server",
-    "version": "0.0.3",
+    "version": "0.0.6",
     "bin": {
-        "streampot": "dist/cli/index.js"
+        "streampot": "dist/bin/streampot.js"
     },
+    "main": "dist/src/index.js",
+    "module": "dist/src/index.mjs",
+    "types": "dist/src/index.d.ts",
     "files": [
-        "dist"
+        "dist",
+        "migrations"
     ],
     "scripts": {
         "build": "cross-env NODE_ENV=production tsup",
         "dev": "cross-env NODE_ENV=development tsup",
         "start": "cross-env NODE_ENV=production dist/cli.js serve",
-        "test": "vitest"
+        "test": "vitest",
+        "migrate": "node-pg-migrate"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.582.0",
+        "@aws-sdk/s3-request-presigner": "^3.582.0",
+        "@expo/spawn-async": "^1.7.2",
         "@fastify/type-provider-typebox": "^4.0.0",
         "@sinclair/typebox": "^0.32.20",
-        "aws-sdk": "^2.1598.0",
         "bull": "^4.12.2",
         "commander": "^12.0.0",
+        "dockerode": "^4.0.2",
         "dotenv": "^16.4.5",
         "fastify": "^4.26.2",
         "fluent-ffmpeg": "^2.1.2",
         "node-pg-migrate": "^7.2.2",
-        "pg": "^8.11.5"
+        "pg": "^8.11.5",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@types/dockerode": "^3.3.29",
         "@types/fluent-ffmpeg": "^2.1.24",
         "@types/node": "^20.12.7",
         "@types/pg": "^8.11.5",
+        "@types/uuid": "^9.0.8",
         "cross-env": "^7.0.3",
         "nodemon": "^3.1.0",
         "ts-node": "^10.9.2",
