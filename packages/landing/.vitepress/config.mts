@@ -31,28 +31,24 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home 🏠', link: '/' },
       // { text: 'Specification 📄', link: '/methods' },
-      { text: 'Examples 🌟', link: '/examples' },
-      { text: 'Contact ✉️', link: '/contact' },
+      { text: 'Sign Up', link: 'https://streampot.io/register' },
+      { text: 'Log In', link: 'https://streampot.io/login' },
     ],
 
     sidebar: [
       {
-        text: 'Getting started',
+
         items: [
-          { text: 'Installation', link: '/installation' },
+          {
+            text: 'Getting started',
+            link: '/getting-started',
+          },
           {
             text: 'List of methods',
             link: '/specification',
-          },
+          }
         ],
-      },
-      {
-        text: 'Self-hosting',
-        items: [
-          { text: 'Docker Compose', link: '/docker-compose' }
-        ]
       },
       {
         text: 'Examples',
@@ -86,6 +82,13 @@ export default defineConfig({
           // { text: '🎞️ Denoise video', link: 'examples#denoise-video' },
         ]
       },
+      {
+        text: 'Self-hosting',
+        items: [
+          { text: 'Installation', link: '/installation' },
+          { text: 'Docker Compose', link: '/docker-compose' }
+        ]
+      }
     ],
 
     socialLinks: [

@@ -1,33 +1,30 @@
 <script setup>
-import { codeToHtml } from 'shiki'
-import { onBeforeMount, ref } from 'vue'
+import { codeToHtml } from 'shiki';
+import { onBeforeMount, ref } from 'vue';
 
-const code = `const client = new StreamPot({
-    secret: 'secret',
-    baseUrl: 'http://localhost:3000',
+const code = `const streampot = new StreamPot({
+    secret: 'YOUR_API_KEY',
 })
 
-const clipJob = await client
+const clipJob = await streampot
     .input('https://example.com/input.mp4')
     .setStartTime(1)
     .setDuration(2)
     .output('output.mp4')
-    .run()
-    
-console.log(clipJob)`
+    .run()`;
 
-const html = ref()
+const html = ref();
 
 onBeforeMount(async () => {
     html.value = await codeToHtml(code, {
         lang: 'javascript',
-        theme: 'tokyo-night'
-    })
-})
+        theme: 'tokyo-night',
+    });
+});
 </script>
 
 <template>
-    <div class="code" v-html="html"/>
+    <div class="code" v-html="html" />
 </template>
 
 <style scoped>
