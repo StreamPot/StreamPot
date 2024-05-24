@@ -11,21 +11,8 @@ If you want a no-setup way to run this, check out [StreamPot](https://www.stream
 
 ## Running the server locally
 
-### Add your s3 bucket details to .env
-You can copy the .env.example format and set
-* S3_ACCESS_KEY
-* S3_SECRET_KEY
-* S3_BUCKET_NAME
-* S3_ENDPOINT
-
-### Add redis details to .env
-E.g.
-* REDIS_HOST=redis
-* REDIS_PORT=6379
-* REDIS_PASSWORD=redis
-
-### Run the app
-```cd packages/server && docker-compose up```
+Visit the [Installation (server)](https://www.streampot.io/installation.html#setting-up-the-server-without-docker) page for self-hosting instructions.
+If you'd like to use the **hosted version**, please [sign up](https://app.streampot.io/register) and give it a try.
 
 ## Running a job in your app
 Note: You should only run this from your server.
