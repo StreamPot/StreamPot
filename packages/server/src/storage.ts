@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import config from "./config";
 
 let s3Client: S3Client | null = null;
 
@@ -10,13 +9,14 @@ export function getS3Client() {
         return s3Client;
     }
 
+    // TODO: make the ./config.ts import work inside the queue worker and change this to use the config.
     return s3Client = new S3Client({
-        endpoint: config.storage.s3.endpoint,
+        endpoint: process.env.S3_ENDPOINT,
         credentials: {
-            accessKeyId: config.storage.s3.accessKey,
-            secretAccessKey: config.storage.s3.secretKey
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_SECRET_KEY,
         },
-        region: config.storage.s3.region,
+        region: process.env.S3_REGION,
         forcePathStyle: true
     });
 }
@@ -28,7 +28,7 @@ export async function uploadFile({ localFilePath, remoteFileName }: {
     const fileStream = fs.createReadStream(localFilePath);
 
     const command = new PutObjectCommand({
-        Bucket: config.storage.s3.bucketName,
+        Bucket: process.env.S3_BUCKET_NAME,
         Key: remoteFileName,
         Body: fileStream,
         ACL: 'public-read',
@@ -39,7 +39,7 @@ export async function uploadFile({ localFilePath, remoteFileName }: {
 
 export async function getPublicUrl(key: string) {
     const command = new GetObjectCommand({
-        Bucket: config.storage.s3.bucketName,
+        Bucket: process.env.S3_BUCKET_NAME,
         Key: key,
     });
 

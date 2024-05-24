@@ -23,4 +23,8 @@ videoQueue.process(config.queueConcurrency, async (job: { data: QueueJob }) => {
     await processWorkflow(entity)
 })
 
+videoQueue.on('failed', (job, err) => {
+    console.error(`Job ${job.id} failed with error ${err.message}`);
+});
+
 export { videoQueue }

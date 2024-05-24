@@ -1,4 +1,4 @@
-import { JobEntity, JobEntityId, JobStatus, UnsavedJobEntity } from '../types'
+import { Asset, JobEntity, JobEntityId, JobStatus, UnsavedJobEntity } from '../types'
 import getClient from "./db"
 
 export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
@@ -10,13 +10,25 @@ export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     return rows.rows[0] as JobEntity
 }
 
-export async function markJobComplete(id: JobEntityId, outputUrls: object[]) {
-    const completedAt = new Date();
-    const serializedOutputUrls = JSON.stringify(outputUrls);
+export async function markJobComplete(id: JobEntityId, assets: Asset[], output: string) {
+    if (assets.length !== 0) {
+        await getClient().query(
+            'INSERT INTO assets (job_id, name, stored_path) VALUES ' +
+            assets.map((_, i) => `($1, $${2 + i * 2}, $${3 + i * 2})`).join(', '),
+            [id, ...assets.flatMap(asset => [asset.name, asset.storedPath])]
+        );
+    }
 
     return await getClient().query(
-        'UPDATE jobs SET status = $1, completed_at = $2, output_url = $3 WHERE id = $4',
-        [JobStatus.Completed, completedAt, serializedOutputUrls, id]
+        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        [JobStatus.Completed, new Date(), output, id]
+    );
+}
+
+export async function markJobFailed(id: JobEntityId, output: string) {
+    return await getClient().query(
+        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        [JobStatus.Failed, new Date(), output, id]
     );
 }
 

@@ -16,4 +16,4 @@ export default {
     },
     queueConcurrency: Number(process.env.QUEUE_CONCURRENCY) || 1,
     ffmpegStrategy: process.env.FFMPEG_STRATEGY || 'local' as 'docker' | 'local',
-}
+};
