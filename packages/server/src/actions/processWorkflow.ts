@@ -16,16 +16,20 @@ export default async function processWorkflow(job: JobEntity) {
 
     if (!outcome.success) {
         await jobsRepository.markJobFailed(job.id, outcome.output);
+        await cleanupExecutionEnvironment(executionEnvironment);
         return;
     }
 
     await jobsRepository.updateJobStatus(job.id, JobStatus.Uploading);
 
-    const assets = await uploadEnvironment(executionEnvironment);
-
-    await jobsRepository.markJobComplete(job.id, assets, outcome.output);
-
-    // TODO: destroy the execution environment.
+    try {
+        const assets = await uploadEnvironment(executionEnvironment);
+        await jobsRepository.markJobComplete(job.id, assets, outcome.output);
+    } catch (error) {
+        await jobsRepository.updateJobStatus(job.id, JobStatus.Failed);
+    } finally {
+        await cleanupExecutionEnvironment(executionEnvironment);
+    }
 }
 
 interface ExecutionEnvironment {
@@ -69,3 +73,6 @@ async function uploadEnvironment({ directory }: ExecutionEnvironment): Promise<A
     return assets.filter(asset => asset !== null);
 }
 
+async function cleanupExecutionEnvironment({ directory }: ExecutionEnvironment) {
+    await fs.rm(directory, { recursive: true });
+}

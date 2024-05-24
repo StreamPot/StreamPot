@@ -39,9 +39,17 @@ export function updateJobStatus(id: JobEntityId, status: JobStatus) {
     );
 }
 
-export async function getJob(id: JobEntityId): Promise<JobEntity | null> {
-    const res = await getClient().query('SELECT * FROM jobs WHERE id = $1 LIMIT 1', [id])
-    return <JobEntity>res.rows[0] ?? null
+export async function getJobWithAssets(id: JobEntityId): Promise<JobEntity | null> {
+    const client = getClient();
+
+    const jobRes = await client.query('SELECT * FROM jobs WHERE id = $1 LIMIT 1', [id]);
+    if (jobRes.rows.length === 0) return null;
+
+    const job = jobRes.rows[0];
+    const assetsRes = await client.query('SELECT * FROM assets WHERE job_id = $1', [id]);
+
+    job.assets = assetsRes.rows;
+    return <JobEntity>job;
 }
 
 export async function getAllJobs(): Promise<JobEntity[]> {

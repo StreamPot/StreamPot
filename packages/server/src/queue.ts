@@ -1,6 +1,6 @@
 import Queue from "bull";
 import { QueueJob } from "./types";
-import { getJob } from "./db/jobsRepository";
+import { getJobWithAssets } from "./db/jobsRepository";
 import processWorkflow from "./actions/processWorkflow";
 import config from "./config";
 
@@ -9,7 +9,7 @@ const videoQueue = new Queue("video transcoding", {
 });
 
 videoQueue.process(config.queueConcurrency, async (job: { data: QueueJob }) => {
-    const entity = await getJob(job.data.entityId)
+    const entity = await getJobWithAssets(job.data.entityId)
 
     // TODO: use logger.
     console.log('processing job', job.data.entityId);
