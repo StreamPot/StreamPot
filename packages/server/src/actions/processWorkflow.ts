@@ -1,7 +1,6 @@
 import { toCommandArguments, Workflow } from "../ffmpeg/workflow";
 import { Asset, JobEntity, JobStatus } from "../types";
 import { executeDocker, executeLocal, ExecutionOutcome } from "../ffmpeg/executionStrategies";
-import config from "../config";
 import * as jobsRepository from "../db/jobsRepository";
 import * as fs from 'fs/promises';
 import { join } from 'node:path';

@@ -1,10 +1,13 @@
 {
     "name": "@streampot/server",
     "description": "A CLI tool for launching a StreamPot server",
-    "version": "0.0.3",
+    "version": "0.0.6",
     "bin": {
-        "streampot": "dist/cli/index.js"
+        "streampot": "dist/bin/streampot.js"
     },
+    "main": "dist/src/index.js",
+    "module": "dist/src/index.mjs",
+    "types": "dist/src/index.d.ts",
     "files": [
         "dist",
         "migrations"

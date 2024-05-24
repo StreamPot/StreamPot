@@ -1,14 +1,11 @@
-#!/usr/bin/env node
 import { Command } from "commander";
-import * as packageJson from "../../package.json";
 import { config } from "dotenv";
 import { createServeCommand } from "./commands/serve";
 import { createMigrateDownCommand } from "./commands/migrate-down";
 import { createMigrateCommand } from "./commands/migrate";
 
-new Command()
+export default new Command()
     .name("streampot")
-    .version(packageJson.version)
     .description("CLI for the StreamPot server")
     .option("-e, --env <env>", "Environment file", ".env")
     .hook('preAction', (thisCommand) => {
@@ -17,8 +14,7 @@ new Command()
     })
     .addCommand(createServeCommand())
     .addCommand(createMigrateDownCommand())
-    .addCommand(createMigrateCommand())
-    .parse();
+    .addCommand(createMigrateCommand());
 
 function ensureEnvVariablesExist(names: string[]) {
     names.forEach(name => {
