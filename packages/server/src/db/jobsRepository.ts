@@ -46,10 +46,12 @@ export async function getJobWithAssets(id: JobEntityId): Promise<JobEntity | nul
     if (jobRes.rows.length === 0) return null;
 
     const job = jobRes.rows[0];
-    const assetsRes = await client.query('SELECT * FROM assets WHERE job_id = $1', [id]);
+    const assetsRes = await client.query('SELECT name, url FROM assets WHERE job_id = $1', [id]);
 
-    job.assets = assetsRes.rows;
-    return <JobEntity>job;
+    return <JobEntity>{
+        assets: assetsRes.rows,
+        ...job
+    };
 }
 
 export async function getAllJobs(): Promise<JobEntity[]> {

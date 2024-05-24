@@ -3,15 +3,15 @@ import { AudioVideoFilter, FilterSpecification } from "./filters";
 
 export type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
 
-type Upload = {
-    path: string
-    public_url: string
+type Asset = {
+    name: string
+    url: string
 }
 
 type JobEntity = {
     id: number
     status: JobStatus
-    output_url?: Upload[]
+    assets?: Asset[]
     created_at: string
 }
 
