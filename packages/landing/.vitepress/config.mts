@@ -9,10 +9,10 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home 🏠', link: '/' },
       // { text: 'Specification 📄', link: '/methods' },
-      { text: 'Examples 🌟', link: '/examples' },
-      { text: 'Contact ✉️', link: '/contact' },
+      { text: 'Docs', link: '/installation' },
+      { text: 'Sign Up', link: 'https://app.streampot.io/register' },
+      { text: 'Log In', link: 'https://app.streampot.io/login' },
     ],
 
     sidebar: [
