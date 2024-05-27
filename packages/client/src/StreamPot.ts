@@ -554,6 +554,11 @@ export default class StreamPot {
         return this;
     }
 
+    public withInputOptions(...options: string[] | [string[]]) {
+        this.addAction('withInputOptions', options);
+        return this;
+    }
+
     public withInputOption(...options: string[] | [string[]]) {
         this.addAction('withInputOption', options);
         return this;
@@ -564,8 +569,18 @@ export default class StreamPot {
         return this;
     }
 
+    public addInputOptions(...options: string[] | [string[]]) {
+        this.addAction('addInputOptions', options);
+        return this;
+    }
+
     public addOutputOption(...options: string[] | [string[]]) {
         this.addAction('addOutputOption', options);
+        return this;
+    }
+
+    public addOutputOptions(...options: string[] | [string[]]) {
+        this.addAction('addOutputOptions', options);
         return this;
     }
 
@@ -579,13 +594,28 @@ export default class StreamPot {
         return this;
     }
 
+    public withOutputOptions(...options: string[] | [string[]]) {
+        this.addAction('withOutputOptions', options);
+        return this;
+    }
+
     public withOption(...options: string[] | [string[]]) {
         this.addAction('withOption', options);
         return this;
     }
 
+    public withOptions(...options: string[] | [string[]]) {
+        this.addAction('withOptions', options);
+        return this;
+    }
+
     public outputOption(...options: string[] | [string[]]) {
         this.addAction('outputOption', options);
+        return this;
+    }
+
+    public outputOptions(...options: string[] | [string[]]) {
+        this.addAction('outputOptions', options);
         return this;
     }
 
