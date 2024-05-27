@@ -11,17 +11,17 @@ export default async function processWorkflow(job: JobEntity) {
     const workflow: Workflow = job.payload;
 
     const executionEnvironment = await prepareExecutionEnvironment();
-    const outcome = await executeWorkflow(workflow, executionEnvironment.directory);
-
-    if (!outcome.success) {
-        await jobsRepository.markJobFailed(job.id, outcome.output);
-        await cleanupExecutionEnvironment(executionEnvironment);
-        return;
-    }
-
-    await jobsRepository.updateJobStatus(job.id, JobStatus.Uploading);
-
     try {
+        const outcome = await executeWorkflow(workflow, executionEnvironment.directory);
+
+        if (!outcome.success) {
+            await jobsRepository.markJobFailed(job.id, outcome.output);
+            await cleanupExecutionEnvironment(executionEnvironment);
+            return;
+        }
+
+        await jobsRepository.updateJobStatus(job.id, JobStatus.Uploading);
+
         const assets = await uploadEnvironment(executionEnvironment);
         await jobsRepository.markJobComplete(job.id, assets, outcome.output);
     } catch (error) {
