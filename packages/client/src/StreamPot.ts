@@ -33,6 +33,7 @@ export default class StreamPot {
     public async checkStatus(jobId: string) {
         const response = await fetch(`${this.baseUrl}/jobs/${jobId}`, {
             headers: {
+                "Accept": "application/json",
                 Authorization: `Bearer ${this.secret}`
             },
         })
@@ -44,6 +45,7 @@ export default class StreamPot {
         const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
             headers: {
+                "Accept": "application/json",
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${this.secret}`
             },
