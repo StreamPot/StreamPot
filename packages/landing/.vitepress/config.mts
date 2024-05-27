@@ -35,7 +35,7 @@ export default defineConfig({
       { text: 'Sign Up', link: 'https://streampot.io/register' },
       { text: 'Log In', link: 'https://streampot.io/login' },
     ],
-
+    logoLink: 'https://streampot.io',
     sidebar: [
       {
 
