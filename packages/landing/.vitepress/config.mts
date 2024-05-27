@@ -29,6 +29,9 @@ export default defineConfig({
     ['meta', { name: 'twitter:image', content: '/og-image.png' }],
   ],
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       // { text: 'Specification 📄', link: '/methods' },
