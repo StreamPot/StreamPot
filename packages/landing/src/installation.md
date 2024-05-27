@@ -2,8 +2,8 @@
 
 StreamPot consist of two parts:
 
-- `@streampot/client` is a JavaScript library that you can use to interact with the server.
-- `@streampot/server` is a CLI tool that you can use to launch the server.
+-   `@streampot/client` is a JavaScript library that you can use to interact with the server.
+-   `@streampot/server` is a CLI tool that you can use to launch the server.
 
 ## Setting up the client
 
@@ -24,7 +24,7 @@ $ yarn add -D @streampot/client
 :::
 
 ```js
-import StreamPot from '@streampot/client'
+import StreamPot from '@streampot/client';
 
 const client = new StreamPot({
     secret: 'your-api-key',
@@ -41,10 +41,10 @@ For examples on how to use the client, visit the [examples page](/examples).
 
 ### Prerequisites
 
-- Node.js version 20 or higher.
-- PostgreSQL
-- Redis
-- FFmpeg
+-   Node.js version 20 or higher.
+-   PostgreSQL
+-   Redis
+-   FFmpeg
 
 ### Installation
 
@@ -80,18 +80,19 @@ S3_PUBLIC_DOMAIN=
 ```
 
 > [!WARNING]
-> Due to the risks involved in processing user-provided content with ffmpeg encoders, it is recommended that `ffmpeg` is run by spinning up on-demand Docker containers. 
-> 
+> Due to the risks involved in processing user-provided content with ffmpeg encoders, it is recommended that `ffmpeg` is run by spinning up on-demand Docker containers.
+>
 > To enable this, add the following to your `.env` file:
+>
 > ```shell
 > FFMPEG_STRATEGY=docker
 > ```
-> 
+>
 > And pull the ffmpeg image on the system:
+>
 > ```shell
 > docker pull linuxserver/ffmpeg
 > ```
-
 
 Before starting the server, run this command to set-up the database tables:
 
@@ -102,5 +103,5 @@ $ streampot migrate
 Now you can start the server:
 
 ```sh
-$ streampot start --port=3000
+$ streampot serve --port=3000
 ```
