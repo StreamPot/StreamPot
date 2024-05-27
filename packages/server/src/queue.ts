@@ -1,17 +1,21 @@
-import Queue from "bull";
+import { Queue, Worker } from 'bullmq';
 import { QueueJob } from "./types";
 import { getJobWithAssets } from "./db/jobsRepository";
 import processWorkflow from "./actions/processWorkflow";
 
-const videoQueue = new Queue("video transcoding", {
-    redis: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT as string) || 6379,
-        password: process.env.REDIS_PASSWORD,
-    },
-});
+const connection = {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT as string) || 6379,
+    password: process.env.REDIS_PASSWORD,
+}
 
-videoQueue.process(Number(process.env.QUEUE_CONCURRENCY) || 1, async (job: { data: QueueJob }) => {
+const videoQueue = new Queue("workflows", {
+    connection,
+})
+
+const videoQueueWorker = new Worker("workflows", async (job: { data: QueueJob }) => {
+    console.log(Number(process.env.QUEUE_CONCURRENCY) || 1)
+
     const entity = await getJobWithAssets(job.data.entityId)
 
     // TODO: use logger.
@@ -24,9 +28,11 @@ videoQueue.process(Number(process.env.QUEUE_CONCURRENCY) || 1, async (job: { dat
     }
 
     await processWorkflow(entity)
+}, {
+    connection,
 })
 
-videoQueue.on('failed', (job, err) => {
+videoQueueWorker.on('failed', (job, err) => {
     console.error(`Job ${job.id} failed with error ${err.message}`);
 });
 

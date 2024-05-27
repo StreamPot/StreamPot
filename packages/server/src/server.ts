@@ -27,7 +27,7 @@ app.post<{ Body: FfmpegActionsRequestType }>('/', {
         payload: request.body
     })
 
-    await videoQueue.add(<QueueJob>{ entityId: entity.id })
+    await videoQueue.add(`workflow-${entity.id}`, <QueueJob>{ entityId: entity.id })
 
     return {
         id: entity.id,
