@@ -1,6 +1,6 @@
 {
     "name": "@streampot/client",
-    "version": "0.0.12",
+    "version": "0.0.15",
     "author": "Jack Bridger",
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
