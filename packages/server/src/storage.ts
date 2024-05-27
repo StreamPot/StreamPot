@@ -9,7 +9,6 @@ export function getS3Client() {
         return s3Client;
     }
 
-    // TODO: make the ./config.ts import work inside the queue worker and change this to use the config.
     return s3Client = new S3Client({
         endpoint: process.env.S3_ENDPOINT,
         credentials: {
