@@ -1,8 +1,8 @@
 # Get started with StreamPot in Node.js
 
-### 1) Create a StreamPot account and generate an API key.
+### 1) Create a [StreamPot account](https://streampot.io/register) and generate an API key.
 
-### 2) Install the StreamPot client in your project.
+### 2) Install the StreamPot client in your project using your preferred package manager.
 
 ::: code-group
 
@@ -20,11 +20,13 @@ $ yarn add -D @streampot/client
 
 :::
 
-### 3) Import the StreamPot client in your code
+### 3) Import the StreamPot Client
 
 `import StreamPot from '@streampot/client'`
 
 ### 4) Initialize StreamPot with your API key
+
+Initialize the StreamPot client with your API key to authenticate your requests.
 
 ```js
 const streampot = new StreamPot({
@@ -33,6 +35,8 @@ const streampot = new StreamPot({
 ```
 
 ### 5) Run your command
+
+Set up your video processing job. This example takes a video, starts at 3 seconds, and clips 6 seconds out, saving it as 'output.mp4'.
 
 ```js
 const clipJob = await streampot
@@ -43,18 +47,22 @@ const clipJob = await streampot
     .setDuration(6) // end at 9 seconds
     .output('output.mp4')
     .run();
+const jobId = clipJob.id;
 ```
 
 ### 5) Wait for it to finish
+
+Poll the job status until it completes. This example uses a simple loop to check the job status every second.
 
 ```js
 while (true) {
     const job = await streampot.checkStatus(jobId);
     if (job.status === 'completed') {
         console.log(job);
+        return;
     } else if (job.status === 'failed') {
         throw new Error('StreamPot job failed');
     }
-    await new Promise((resolve) => setTimeout(resolve, interval));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 }
 ```
