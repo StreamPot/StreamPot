@@ -4,7 +4,7 @@ import StreamPot from '../src'
 const EXAMPLE_BUNNY_MP4_1MB = "https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4"
 const EXAMPLE_WATERMARK_ORANGE = 'https://pngfre.com/wp-content/uploads/orange-poster.png'
 
-const BASE_URL = process.env.NODE_ENV === 'development' ? 'https://localhost:3000' : 'http://127.0.0.1:3000'
+const BASE_URL = process.env.NODE_ENV === 'development' ? 'https://localhost:3000' : 'http://127.0.0.1:3559'
 
 test('Client test', async () => {
     const client = new StreamPot({
@@ -70,3 +70,19 @@ test('add watermark image', async () => {
         .run()
     console.log(clipJob);
 })
+
+
+test('test runAndWait', async () => {
+    const client = new StreamPot({
+        secret: 'secret',
+        baseUrl: BASE_URL,
+    })
+
+    const clipJob = await client.input(EXAMPLE_BUNNY_MP4_1MB)
+        .setStartTime(1)
+        .setDuration(2)
+        .output('output.mp4')
+        .runAndWait()
+
+    expect(clipJob).toHaveProperty('status', 'completed')
+});
