@@ -32,6 +32,7 @@ app.post<{ Body: FfmpegActionsRequestType }>('/', {
     return {
         id: entity.id,
         status: entity.status,
+        created_at: entity.created_at,
     }
 })
 
