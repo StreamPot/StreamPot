@@ -1,19 +1,6 @@
 import fetch from 'cross-fetch';
 import { AudioVideoFilter, FilterSpecification } from "./filters";
-
-export type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
-
-type Asset = {
-    name: string
-    url: string
-}
-
-type JobEntity = {
-    id: number
-    status: JobStatus
-    assets?: Asset[]
-    created_at: string
-}
+import { JobEntity } from "./JobEntity";
 
 export type StreamPotOptions = {
     secret: string;
@@ -38,7 +25,7 @@ export default class StreamPot {
             },
         })
 
-        return await response.json()
+        return new JobEntity(await response.json())
     }
 
     /**
@@ -48,6 +35,9 @@ export default class StreamPot {
         return await this.getJob(Number(jobId))
     }
 
+    /**
+     * Run the job and immediately return the job entity.
+     */
     public async run(): Promise<JobEntity> {
         const response = await fetch(`${this.baseUrl}/`, {
             method: 'POST',
@@ -59,7 +49,21 @@ export default class StreamPot {
             body: JSON.stringify(this.actions)
         })
 
-        return response.json()
+        return new JobEntity(await response.json())
+    }
+
+    /**
+     * Run the job and wait for it to complete or fail.
+     */
+    public async runAndWait(intervalMs: number = 1000): Promise<JobEntity> {
+        let job = await this.run()
+
+        while (job.status !== 'completed' && job.status !== 'failed') {
+            await new Promise(resolve => setTimeout(resolve, intervalMs))
+            job = await this.getJob(job.id)
+        }
+
+        return job
     }
 
     protected addAction(name: string, ...values: any) {
@@ -626,12 +630,18 @@ export default class StreamPot {
         return this;
     }
 
-    public filterGraph(spec: string | FilterSpecification | (string | FilterSpecification)[], map: string | string[] | undefined) {
+    public filterGraph(
+        spec: string | FilterSpecification | Array<string | FilterSpecification>,
+        map?: string[] | string,
+    ) {
         this.addAction('filterGraph', spec, map);
         return this;
     }
 
-    public complexFilter(spec: string | FilterSpecification | (string | FilterSpecification)[], map: string | string[] | undefined) {
+    public complexFilter(
+        spec: string | FilterSpecification | Array<string | FilterSpecification>,
+        map?: string[] | string,
+    ) {
         this.addAction('complexFilter', spec, map);
         return this;
     }
