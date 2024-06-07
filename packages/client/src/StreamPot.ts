@@ -15,6 +15,32 @@ type JobEntity = {
     created_at: string
 }
 
+class JobEntity {
+    public id: number
+    public status: JobStatus
+    public assets?: Asset[]
+    public created_at: string
+
+    #client: StreamPot
+
+    constructor({ id, status, assets, created_at }: {
+        id: number
+        status: JobStatus
+        assets?: Asset[]
+        created_at: string
+    }, client: StreamPot) {
+        this.id = id
+        this.status = status
+        this.assets = assets
+        this.created_at = created_at
+        this.#client = client
+    }
+
+    public async poll(intervalMs: number): Promise<typeof self> {
+        // TODO.
+    }
+}
+
 export type StreamPotOptions = {
     secret: string;
     baseUrl?: string;
