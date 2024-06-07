@@ -30,7 +30,7 @@ export default class StreamPot {
         this.baseUrl = baseUrl;
     }
 
-    public async checkStatus(jobId: string) {
+    public async getJob(jobId: number): Promise<JobEntity> {
         const response = await fetch(`${this.baseUrl}/jobs/${jobId}`, {
             headers: {
                 "Accept": "application/json",
@@ -39,6 +39,13 @@ export default class StreamPot {
         })
 
         return await response.json()
+    }
+
+    /**
+     * @deprecated Use `getJob(jobId)` instead
+     */
+    public async checkStatus(jobId: string | number): Promise<JobEntity> {
+        return await this.getJob(Number(jobId))
     }
 
     public async run(): Promise<JobEntity> {
