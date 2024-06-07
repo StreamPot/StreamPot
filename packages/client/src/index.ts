@@ -1,5 +1,7 @@
 import StreamPot, { StreamPotOptions } from './StreamPot';
 
+export type { JobStatus } from './JobEntity';
+
 /**
  * This is done to return a new instance of StreamPot after the first method call.
  * (for convenience in chaining, to avoid having to re-create a new instance each time)

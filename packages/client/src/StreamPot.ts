@@ -1,45 +1,6 @@
 import fetch from 'cross-fetch';
 import { AudioVideoFilter, FilterSpecification } from "./filters";
-
-export type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading'
-
-type Asset = {
-    name: string
-    url: string
-}
-
-type JobEntity = {
-    id: number
-    status: JobStatus
-    assets?: Asset[]
-    created_at: string
-}
-
-class JobEntity {
-    public id: number
-    public status: JobStatus
-    public assets?: Asset[]
-    public created_at: string
-
-    #client: StreamPot
-
-    constructor({ id, status, assets, created_at }: {
-        id: number
-        status: JobStatus
-        assets?: Asset[]
-        created_at: string
-    }, client: StreamPot) {
-        this.id = id
-        this.status = status
-        this.assets = assets
-        this.created_at = created_at
-        this.#client = client
-    }
-
-    public async poll(intervalMs: number): Promise<typeof self> {
-        // TODO.
-    }
-}
+import { JobEntity } from "./JobEntity";
 
 export type StreamPotOptions = {
     secret: string;
@@ -64,7 +25,7 @@ export default class StreamPot {
             },
         })
 
-        return await response.json()
+        return new JobEntity(await response.json(), this)
     }
 
     /**
@@ -85,7 +46,7 @@ export default class StreamPot {
             body: JSON.stringify(this.actions)
         })
 
-        return response.json()
+        return new JobEntity(await response.json(), this)
     }
 
     protected addAction(name: string, ...values: any) {
