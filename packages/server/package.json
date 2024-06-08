@@ -1,7 +1,7 @@
 {
     "name": "@streampot/server",
     "description": "A CLI tool for launching a StreamPot server",
-    "version": "0.0.11",
+    "version": "0.0.13",
     "bin": {
         "streampot": "dist/bin/streampot.js"
     },
