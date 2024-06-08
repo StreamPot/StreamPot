@@ -1,4 +1,4 @@
 export interface Asset {
     name: string
-    storedPath: string
+    url: string
 }

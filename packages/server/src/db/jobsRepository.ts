@@ -20,14 +20,14 @@ export async function markJobComplete(id: JobEntityId, assets: Asset[], output: 
     }
 
     return await getClient().query(
-        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        'UPDATE jobs SET status = $1, completed_at = $2, logs = $3 WHERE id = $4',
         [JobStatus.Completed, new Date(), output, id]
     );
 }
 
 export async function markJobFailed(id: JobEntityId, output: string) {
     return await getClient().query(
-        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        'UPDATE jobs SET status = $1, completed_at = $2, logs = $3 WHERE id = $4',
         [JobStatus.Failed, new Date(), output, id]
     );
 }
@@ -49,11 +49,30 @@ export async function getJobWithAssets(id: JobEntityId): Promise<JobEntity | nul
     const assetsRes = await client.query('SELECT name, url FROM assets WHERE job_id = $1', [id]);
 
     return <JobEntity>{
-        assets: assetsRes.rows,
-        ...job
+        ...job,
+        outputs: assetsToOutputs(assetsRes.rows),
     };
 }
 
+function assetsToOutputs(assets: Asset[]): Record<string, string> {
+    return assets.reduce((outputs, asset) => {
+        outputs[asset.name] = asset.url
+        return outputs
+    }, {})
+}
+
 export async function getAllJobs(): Promise<JobEntity[]> {
-    return (await getClient().query('SELECT * FROM jobs')).rows as JobEntity[]
+    const client = getClient();
+    const [
+        jobs,
+        assets
+    ] = await Promise.all([
+        client.query('SELECT * FROM jobs'),
+        client.query('SELECT * FROM assets')
+    ])
+
+    return jobs.rows.map(job => <JobEntity>{
+        ...job,
+        outputs: assetsToOutputs(assets.rows.filter(asset => asset.job_id === job.id)),
+    });
 }
