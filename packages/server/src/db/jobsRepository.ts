@@ -54,7 +54,7 @@ export async function getJobWithAssets(id: JobEntityId): Promise<JobEntity | nul
     };
 }
 
-function assetsToOutputs(assets: Asset[]) {
+function assetsToOutputs(assets: Asset[]): Record<string, string> {
     return assets.reduce((outputs, asset) => {
         outputs[asset.name] = asset.url
         return outputs
@@ -62,21 +62,17 @@ function assetsToOutputs(assets: Asset[]) {
 }
 
 export async function getAllJobs(): Promise<JobEntity[]> {
-    const getAllJobsAndTheirAssets = `
-    SELECT 
-        jobs.*, 
-        json_agg(json_build_object('name', assets.name, 'url', assets.url)) AS assets
-    FROM 
-        jobs
-    LEFT JOIN 
-        assets ON jobs.id = assets.job_id
-    GROUP BY 
-        jobs.id
-`;
-    const rows = (await getClient().query(getAllJobsAndTheirAssets)).rows
-    const jobs = rows.map(job => {
-        const { assets, ...jobsWithoutAssets } = job
-        return { ...jobsWithoutAssets, outputs: assetsToOutputs(assets) }
-    })
-    return jobs
+    const client = getClient();
+    const [
+        jobs,
+        assets
+    ] = await Promise.all([
+        client.query('SELECT * FROM jobs'),
+        client.query('SELECT * FROM assets')
+    ])
+
+    return jobs.rows.map(job => <JobEntity>{
+        ...job,
+        outputs: assetsToOutputs(assets.rows.filter(asset => asset.job_id === job.id)),
+    });
 }

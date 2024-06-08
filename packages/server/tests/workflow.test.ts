@@ -15,5 +15,5 @@ test("workflow toCommandArguments", async () => {
 
     const command = toCommandArguments(workflow);
 
-    expect(command).toStrictEqual(["-i", "input.mp4", "-y", "output.mp4"])
+    expect(command).toStrictEqual(["-hide_banner", "-i", "input.mp4", "-y", "output.mp4"])
 });
