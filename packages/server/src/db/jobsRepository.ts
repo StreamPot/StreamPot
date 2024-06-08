@@ -20,14 +20,14 @@ export async function markJobComplete(id: JobEntityId, assets: Asset[], output: 
     }
 
     return await getClient().query(
-        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        'UPDATE jobs SET status = $1, completed_at = $2, logs = $3 WHERE id = $4',
         [JobStatus.Completed, new Date(), output, id]
     );
 }
 
 export async function markJobFailed(id: JobEntityId, output: string) {
     return await getClient().query(
-        'UPDATE jobs SET status = $1, completed_at = $2, output = $3 WHERE id = $4',
+        'UPDATE jobs SET status = $1, completed_at = $2, logs = $3 WHERE id = $4',
         [JobStatus.Failed, new Date(), output, id]
     );
 }
