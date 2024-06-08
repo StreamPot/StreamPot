@@ -36,33 +36,32 @@ const streampot = new StreamPot({
 
 ### 5) Run your command
 
-Set up your video processing job. This example takes a video, starts at 3 seconds, and clips 6 seconds out, saving it as 'output.mp4'.
+Set up your video processing job. This example converts an mp4 to and mp3 audio.
 
 ```js
-const clipJob = await streampot
+const convertedVideo = await streampot
     .input(
-        'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'
+        'https://sample-videos.com/video321/mp4/240/big_buck_bunny_240p_1mb.mp4'
     )
-    .setStartTime(3) // start at 3 seconds
-    .setDuration(6) // end at 9 seconds
-    .output('output.mp4')
-    .run();
-const jobId = clipJob.id;
+    .output('output.mp3')
+    .runAndWait();
 ```
 
-### 5) Wait for it to finish
+### 6) Wait for it to complete
 
-Poll the job status until it completes. This example uses a simple loop to check the job status every second.
+You can either simply await the change. A completed result will be like the below:
 
 ```js
-while (true) {
-    const job = await streampot.checkStatus(jobId);
-    if (job.status === 'completed') {
-        console.log(job);
-        return;
-    } else if (job.status === 'failed') {
-        throw new Error('StreamPot job failed');
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+// convertedVideo
+{
+  id: 235,
+  status: 'completed',
+  outputs: {
+    'output.mp3': 'https://assets.streampot.io/750015a1-4572-4a90-a9ae-f6c9a1be8370-output.mp3'
+  },
+  logs: '',
+  created_at: '2024-06-08T19:51:56.000000Z'
 }
 ```
+
+You can also poll it manually, you can see more details in our examples.
