@@ -14,7 +14,7 @@ export function toCommandArguments(workflow: Workflow): string[] {
         }
     }
 
-    return ['-hide_banner', ...ffmpegInstance._getArguments()];
+    return ['-hide_banner', '-v', 'error', ...ffmpegInstance._getArguments()];
 }
 
 interface WorkflowAction {
