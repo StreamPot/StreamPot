@@ -17,6 +17,16 @@ export default class StreamPot {
         this.baseUrl = baseUrl;
     }
 
+    protected handleError(response: Response) {
+        if (response.status === 401) {
+            throw new Error('Invalid StreamPot secret key')
+        }
+
+        if (response.status >= 400) {
+            throw new Error(`StreamPot API: ${response.status} ${response.statusText}`)
+        }
+    }
+
     public async getJob(jobId: number): Promise<JobEntity> {
         const response = await fetch(`${this.baseUrl}/jobs/${jobId}`, {
             headers: {
@@ -24,6 +34,8 @@ export default class StreamPot {
                 Authorization: `Bearer ${this.secret}`
             },
         })
+
+        this.handleError(response)
 
         return new JobEntity(await response.json())
     }
@@ -48,6 +60,8 @@ export default class StreamPot {
             },
             body: JSON.stringify(this.actions)
         })
+
+        this.handleError(response)
 
         return new JobEntity(await response.json())
     }
