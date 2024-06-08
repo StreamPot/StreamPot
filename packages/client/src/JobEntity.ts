@@ -1,28 +1,25 @@
 export type JobStatus = 'pending' | 'completed' | 'failed' | 'uploading';
 
-type Asset = {
-    name: string
-    url: string
-}
+type Outputs = Record<string, string>
 
 export class JobEntity {
     public id: number
     public status: JobStatus
-    public assets?: Asset[]
-    public output?: string
+    public outputs: Outputs
+    public logs?: string
     public created_at: string
 
     constructor(data: {
         id: number
         status: JobStatus
-        assets?: Asset[]
-        output?: string
+        outputs: Outputs
+        logs?: string
         created_at: string
     }) {
         this.id = data.id
         this.status = data.status
-        this.assets = data.assets
-        this.output = data.output
+        this.outputs = data.outputs
+        this.logs = data.logs
         this.created_at = data.created_at
     }
 }
