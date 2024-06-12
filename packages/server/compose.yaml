@@ -26,6 +26,7 @@ services:
       S3_REGION: ${S3_REGION}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
       S3_ENDPOINT: ${S3_ENDPOINT}
+      S3_PUBLIC_DOMAIN: ${S3_PUBLIC_DOMAIN}
       REDIS_HOST: redis
       REDIS_PORT: 6379
     ports:

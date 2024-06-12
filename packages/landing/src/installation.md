@@ -28,7 +28,7 @@ import StreamPot from '@streampot/client';
 
 const client = new StreamPot({
     secret: 'your-api-key',
-    baseUrl: 'https://localhost:3000',
+    baseUrl: 'http://localhost:3000',
 });
 ```
 
