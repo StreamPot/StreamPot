@@ -58,6 +58,10 @@ export default defineConfig({
           {
             text: 'List of methods',
             link: '/specification',
+          },
+          {
+            text: 'Frequently asked questions',
+            link: '/faq',
           }
         ],
       },
