@@ -26,6 +26,7 @@ export default async function processWorkflow(job: JobEntity) {
         await jobsRepository.markJobComplete(job.id, assets, outcome.output);
     } catch (error) {
         await jobsRepository.updateJobStatus(job.id, JobStatus.Failed);
+        throw error;
     } finally {
         await cleanupExecutionEnvironment(executionEnvironment);
     }
