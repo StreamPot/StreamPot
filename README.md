@@ -7,7 +7,7 @@ StreamPot is a project that provides scaffolding for transforming media in your 
 
 We are building this because an increasing number of projects are transforming media as part of their workflow. 
 
-If you want a no-setup way to run this, check out [StreamPot](https://www.streampot.io/) - coming soon.
+If you want a no-setup way to run this, check out [StreamPot](https://www.streampot.io/).
 
 ## Running the server locally
 
@@ -19,7 +19,9 @@ Note: You should only run this from your server.
 
 ### Install the client library
 
-```pnpm i @streampot/client```
+```
+pnpm i @streampot/client
+```
 
 ### Initialise the client & submit a job.
 ```js
