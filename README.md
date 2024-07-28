@@ -11,7 +11,7 @@ If you want a no-setup way to run this, check out [StreamPot](https://www.stream
 
 ## Running the server locally
 
-Visit the [Installation (server)](https://www.streampot.io/installation.html#setting-up-the-server-without-docker) page for self-hosting instructions.
+Visit the [Installation (server)](https://docs.streampot.io/installation.html) page for self-hosting instructions.
 If you'd like to use the **hosted version**, please [sign up](https://app.streampot.io/register) and give it a try.
 
 ## Running a job in your app
