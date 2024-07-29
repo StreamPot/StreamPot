@@ -54,4 +54,4 @@ This project is heavily reliant on the amazing work of the ffmpeg and fluent-ffm
 
 ## Feedback
 
-If you want to use StreamPot in your project, I'd be happy to help & improve it based on your feedback. Email me at jack@bitreach.io or [let's have a call](https://cal.com/jackbridger/30min). 
+If you want to use StreamPot in your project, I'd be happy to help & improve it based on your feedback. Email me at team@streampot.io or [let's have a call](https://cal.com/jackbridger/30min). 
