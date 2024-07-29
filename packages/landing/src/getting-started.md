@@ -36,7 +36,7 @@ const streampot = new StreamPot({
 
 ### 5) Run your command
 
-Set up your video processing job. This example converts an mp4 to and mp3 audio.
+Set up your video processing job. This example converts an mp4 video to mp3 audio.
 
 ```js
 const convertedVideo = await streampot
