@@ -1,14 +1,24 @@
 import fluentFfmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
+import { executeDocker, executeLocal, ExecutionOutcome } from "./execution";
+import methodList from './fluent-ffmpeg-methods.json' assert { type: 'json' };
 
-export type Workflow = WorkflowAction[]
+/**
+ * A list of allowed methods that can be called on the ffmpeg instance.
+ */
+const methods = methodList as (keyof FfmpegCommand)[];
+
+export interface WorkflowAction {
+    name: string,
+    value: string[]
+}
 
 /**
  * Uses fluent-ffmpeg to build the ffmpeg arguments array from a workflow.
  */
-export function toCommandArguments(workflow: Workflow): string[] {
+export function toCommandArguments(actions: WorkflowAction[]): string[] {
     const ffmpegInstance = fluentFfmpeg()
 
-    for (const action of workflow) {
+    for (const action of actions) {
         if ((methods as string[]).includes(action.name)) {
             ffmpegInstance[action.name](...action.value)
         }
@@ -17,129 +27,13 @@ export function toCommandArguments(workflow: Workflow): string[] {
     return ['-hide_banner', '-v', 'error', ...ffmpegInstance._getArguments()];
 }
 
-interface WorkflowAction {
-    name: string,
-    value: string[]
+export async function executeWorkflow(actions: WorkflowAction[], directory: string): Promise<ExecutionOutcome> {
+    const ffmpegArguments = toCommandArguments(actions);
+
+    if (process.env.FFMPEG_STRATEGY === 'docker') {
+        return await executeDocker({ ffmpegArguments, path: directory });
+    }
+
+    return await executeLocal({ ffmpegArguments, path: directory });
 }
 
-/**
- * A list of methods that are allowed to be called on the ffmpeg instance.
- */
-const methods: (keyof FfmpegCommand)[] = [
-    'mergeAdd',
-    'addInput',
-    'input',
-    'withInputFormat',
-    'inputFormat',
-    'fromFormat',
-    'withInputFps',
-    'withInputFPS',
-    'withFpsInput',
-    'withFPSInput',
-    'inputFPS',
-    'inputFps',
-    'fpsInput',
-    'FPSInput',
-    'nativeFramerate',
-    'withNativeFramerate',
-    'native',
-    'setStartTime',
-    'seekInput',
-    'loop',
-    'withNoAudio',
-    'noAudio',
-    'withAudioCodec',
-    'audioCodec',
-    'withAudioBitrate',
-    'audioBitrate',
-    'withAudioChannels',
-    'audioChannels',
-    'withAudioFrequency',
-    'audioFrequency',
-    'withAudioQuality',
-    'audioQuality',
-    'withAudioFilter',
-    'withAudioFilters',
-    'audioFilter',
-    'audioFilters',
-    'withNoVideo',
-    'noVideo',
-    'withVideoCodec',
-    'videoCodec',
-    'withVideoBitrate',
-    'videoBitrate',
-    'withVideoFilter',
-    'withVideoFilters',
-    'videoFilter',
-    'videoFilters',
-    'withOutputFps',
-    'withOutputFPS',
-    'withFpsOutput',
-    'withFPSOutput',
-    'withFps',
-    'withFPS',
-    'outputFPS',
-    'outputFps',
-    'fpsOutput',
-    'FPSOutput',
-    'fps',
-    'FPS',
-    'takeFrames',
-    'withFrames',
-    'frames',
-    'keepPixelAspect',
-    'keepDisplayAspect',
-    'keepDisplayAspectRatio',
-    'keepDAR',
-    'withSize',
-    'setSize',
-    'size',
-    'withAspect',
-    'withAspectRatio',
-    'setAspect',
-    'setAspectRatio',
-    'aspect',
-    'aspectRatio',
-    'applyAutopadding',
-    'applyAutoPadding',
-    'applyAutopad',
-    'applyAutoPad',
-    'withAutopadding',
-    'withAutoPadding',
-    'withAutopad',
-    'withAutoPad',
-    'autoPad',
-    'autopad',
-    'addOutput',
-    'output',
-    'seekOutput',
-    'seek',
-    'withDuration',
-    'setDuration',
-    'duration',
-    'toFormat',
-    'withOutputFormat',
-    'outputFormat',
-    'format',
-    'map',
-    'updateFlvMetadata',
-    'flvmeta',
-    'addInputOption',
-    'addInputOptions',
-    'withInputOption',
-    'withInputOptions',
-    'inputOption',
-    'inputOptions',
-    'addOutputOption',
-    'addOutputOptions',
-    'addOption',
-    'addOptions',
-    'withOutputOption',
-    'withOutputOptions',
-    'withOption',
-    'withOptions',
-    'outputOption',
-    'outputOptions',
-    'filterGraph',
-    'complexFilter',
-];

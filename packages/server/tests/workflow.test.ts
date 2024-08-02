@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
-import { toCommandArguments, Workflow } from "../src/ffmpeg/workflow";
+import { toCommandArguments, WorkflowAction } from "../src/ffmpeg/workflow";
 
 test("workflow toCommandArguments", async () => {
-    const workflow: Workflow = [
+    const workflow: WorkflowAction[] = [
         {
             name: "input",
             value: ["input.mp4"],
@@ -15,5 +15,5 @@ test("workflow toCommandArguments", async () => {
 
     const command = toCommandArguments(workflow);
 
-    expect(command).toStrictEqual(["-hide_banner", "-i", "input.mp4", "-y", "output.mp4"])
+    expect(command).toStrictEqual(["-hide_banner", "-v", "error", "-i", "input.mp4", "-y", "output.mp4"])
 });
