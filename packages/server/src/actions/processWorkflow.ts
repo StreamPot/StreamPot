@@ -2,22 +2,22 @@ import { executeWorkflow, WorkflowAction } from "../ffmpeg/workflow";
 import { JobEntity, JobStatus } from "../types";
 import * as jobsRepository from "../db/jobsRepository";
 import {
-    cleanupEnvironment,
-    prepareEnvironment,
+    deleteEnvironment,
+    createEnvironment,
     uploadEnvironment
 } from "../ffmpeg/environment";
 
 export default async function processWorkflow(job: JobEntity) {
     const workflow: WorkflowAction[] = job.payload;
 
-    const executionEnvironment = await prepareEnvironment();
+    const executionEnvironment = await createEnvironment();
 
     try {
-        const outcome = await executeWorkflow(workflow, executionEnvironment.directory);
+        const outcome = await executeWorkflow(workflow, executionEnvironment);
 
         if (!outcome.success) {
             await jobsRepository.markJobFailed(job.id, outcome.output);
-            await cleanupEnvironment(executionEnvironment);
+            await deleteEnvironment(executionEnvironment);
             return;
         }
 
@@ -29,6 +29,6 @@ export default async function processWorkflow(job: JobEntity) {
         await jobsRepository.updateJobStatus(job.id, JobStatus.Failed);
         throw error;
     } finally {
-        await cleanupEnvironment(executionEnvironment);
+        await deleteEnvironment(executionEnvironment);
     }
 }

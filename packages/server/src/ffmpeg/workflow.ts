@@ -1,6 +1,7 @@
 import fluentFfmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
 import { executeDocker, executeLocal, ExecutionOutcome } from "./execution";
 import methodList from './fluent-ffmpeg-methods.json' assert { type: 'json' };
+import { Environment } from "./environment";
 
 /**
  * A list of allowed methods that can be called on the ffmpeg instance.
@@ -27,13 +28,13 @@ export function toCommandArguments(actions: WorkflowAction[]): string[] {
     return ['-hide_banner', '-v', 'error', ...ffmpegInstance._getArguments()];
 }
 
-export async function executeWorkflow(actions: WorkflowAction[], directory: string): Promise<ExecutionOutcome> {
+export async function executeWorkflow(actions: WorkflowAction[], environment: Environment): Promise<ExecutionOutcome> {
     const ffmpegArguments = toCommandArguments(actions);
 
     if (process.env.FFMPEG_STRATEGY === 'docker') {
-        return await executeDocker({ ffmpegArguments, path: directory });
+        return await executeDocker({ ffmpegArguments, path: environment.directory });
     }
 
-    return await executeLocal({ ffmpegArguments, path: directory });
+    return await executeLocal({ ffmpegArguments, path: environment.directory });
 }
 

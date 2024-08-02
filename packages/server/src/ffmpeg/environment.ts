@@ -4,11 +4,11 @@ import { join } from "node:path";
 import { v4 as uuidv4 } from "uuid";
 import { getPublicUrl, uploadFile } from "../storage";
 
-interface Environment {
+export interface Environment {
     directory: string
 }
 
-export async function prepareEnvironment() {
+export async function createEnvironment() {
     const name = `/tmp/ffmpeg-${uuidv4()}`;
 
     await fs.mkdir(name, { mode: 0o755 });
@@ -37,6 +37,6 @@ export async function uploadEnvironment({ directory }: Environment): Promise<Ass
     return assets.filter(asset => asset !== null);
 }
 
-export async function cleanupEnvironment({ directory }: Environment) {
+export async function deleteEnvironment({ directory }: Environment) {
     await fs.rm(directory, { recursive: true });
 }
