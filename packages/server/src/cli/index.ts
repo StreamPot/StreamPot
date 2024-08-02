@@ -10,7 +10,7 @@ export default new Command()
     .option("-e, --env <env>", "Environment file", ".env")
     .hook('preAction', (thisCommand) => {
         config({ path: thisCommand.opts().env });
-        ensureEnvVariablesExist(['DATABASE_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'S3_ENDPOINT', 'S3_PUBLIC_DOMAIN', 'S3_BUCKET_NAME', 'S3_REGION']);
+        ensureEnvVariablesExist(['DATABASE_URL', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'S3_ENDPOINT', 'S3_BUCKET_NAME', 'S3_REGION']);
     })
     .addCommand(createServeCommand())
     .addCommand(createMigrateDownCommand())
