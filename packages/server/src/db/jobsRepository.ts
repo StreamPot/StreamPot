@@ -1,5 +1,5 @@
 import { Asset, JobEntity, JobEntityId, JobStatus, UnsavedJobEntity } from '../types'
-import getClient from "./db"
+import getClient from "./connection"
 
 export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
     const rows = await getClient().query(

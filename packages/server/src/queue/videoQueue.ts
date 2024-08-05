@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
-import connection from "./connection";
+import config from "@/config";
 
 export const videoQueue = new Queue("workflows", {
-    connection,
+    connection: config.database.connections.redis,
 })

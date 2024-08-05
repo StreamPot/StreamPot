@@ -22,7 +22,7 @@ export function getS3Client() {
 
 export async function uploadFile({ localFilePath, remoteFileName }: {
     localFilePath: string,
-    remoteFileName: string
+    remoteFileName: string,
 }) {
     const fileStream = fs.createReadStream(localFilePath);
 

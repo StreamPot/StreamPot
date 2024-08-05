@@ -29,3 +29,4 @@ export type JobEntity = UnsavedJobEntity & {
     completed_at?: Date
     outputs?: Record<string, string> // record of assets name (user provided) and url (generated)
 }
+
