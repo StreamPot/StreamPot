@@ -42,14 +42,6 @@ function createDriver(config: DiskConfig): StorageAdapter {
     }
 }
 
-//
-// const drivers = Object.fromEntries(
-//     Object.entries(config.filesystems).map(([key, driverConfig]) => [
-//         key,
-//         createDriver(driverConfig)
-//     ])
-// );
-// isntead, make it an array
 const drivers = Object.entries(config.filesystems).map(([key, driverConfig]) => createDriver(driverConfig));
 
 export default new FileStorage(new FallbackAdapter(drivers));
