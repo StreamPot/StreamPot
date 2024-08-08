@@ -2,7 +2,6 @@ import TOML from "smol-toml"
 import fs from "node:fs";
 import { deepMerge } from "@/utils";
 import type { Config } from "./types";
-import type { DiskConfig } from "./types";
 
 const DEFAULT_CONFIG: Partial<Config> = {
     queue: {
@@ -31,5 +30,3 @@ function loadConfig(): Config {
 }
 
 export default loadConfig();
-
-export type { DiskConfig }

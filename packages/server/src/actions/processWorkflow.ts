@@ -1,11 +1,11 @@
-import { executeWorkflow, WorkflowAction } from "../ffmpeg/workflow";
-import { JobEntity, JobStatus } from "../types";
+import { executeWorkflow, WorkflowAction } from "@/ffmpeg/workflow";
+import { JobEntity, JobStatus } from "@/types";
 import * as jobsRepository from "../db/jobsRepository";
 import {
     deleteEnvironment,
     createEnvironment,
     uploadEnvironment
-} from "../ffmpeg/environment";
+} from "@/ffmpeg/environment";
 
 export default async function processWorkflow(job: JobEntity) {
     const workflow: WorkflowAction[] = job.payload;

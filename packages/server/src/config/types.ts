@@ -19,15 +19,20 @@ export interface Config {
     };
 }
 
+export enum DiskDriver {
+    Local = 'local',
+    S3 = 's3'
+}
+
 export type DiskConfig = LocalDiskConfig | S3DiskConfig;
 
-interface LocalDiskConfig extends BaseDiskConfig {
-    driver: 'local';
+export interface LocalDiskConfig extends BaseDiskConfig {
+    driver: DiskDriver.Local;
     root: string;
 }
 
-interface S3DiskConfig extends BaseDiskConfig {
-    driver: 's3';
+export interface S3DiskConfig extends BaseDiskConfig {
+    driver: DiskDriver.S3;
     key: string;
     secret: string;
     region: string;
@@ -36,5 +41,5 @@ interface S3DiskConfig extends BaseDiskConfig {
 }
 
 interface BaseDiskConfig {
-    driver: string;
+    driver: DiskDriver;
 }
