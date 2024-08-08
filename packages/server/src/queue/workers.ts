@@ -2,7 +2,7 @@ import { Worker } from "bullmq";
 import { QueueJob } from "../types";
 import { getJobWithAssets } from "../db/jobsRepository";
 import processWorkflow from "../actions/processWorkflow";
-import connection from "./connection";
+import config from "../config";
 
 export function startWorkers() {
     const videoQueueWorker = new Worker("workflows", async (job: { data: QueueJob }) => {
@@ -16,8 +16,8 @@ export function startWorkers() {
 
         await processWorkflow(entity)
     }, {
-        connection,
-        concurrency: Number(process.env.QUEUE_CONCURRENCY) || 1,
+        connection: config.database.connections.redis,
+        concurrency: config.queue.concurrency,
     })
 
     videoQueueWorker.on('failed', (job, err) => {

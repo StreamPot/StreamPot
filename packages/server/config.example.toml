@@ -1,0 +1,18 @@
+[database.connections.pgsql]
+url = "postgresql://user:pass@host/db"
+
+[database.connections.redis]
+host = "redis.example.com"
+port = 6379
+password = "secretpassword"
+
+[queue]
+concurrency = 10
+
+[filesystems.s3]
+driver = "s3"
+key = "your-key"
+secret = "your-secret"
+region = "us-west-2"
+bucket = "your-bucket"
+url = "https://your-bucket.s3.amazonaws.com"

@@ -1,8 +1,9 @@
-import { Asset } from "../types";
+import { Asset } from "@/types";
 import fs from "fs/promises";
+import { createReadStream } from "fs";
 import { join } from "node:path";
 import { v4 as uuidv4 } from "uuid";
-import { getPublicUrl, uploadFile } from "../storage";
+import storage from "@/services/storage";
 
 export interface Environment {
     directory: string
@@ -25,9 +26,9 @@ export async function uploadEnvironment({ directory }: Environment): Promise<Ass
         const localFilePath = join(directory, file);
         const remoteFileName = `${uuidv4()}-${file}`;
 
-        await uploadFile({ localFilePath, remoteFileName });
+        await storage.write(remoteFileName, createReadStream(localFilePath), { visibility: 'public' });
 
-        const url = await getPublicUrl(remoteFileName)
+        const url = await storage.publicUrl(remoteFileName);
 
         return <Asset>{ name: file, url, storedPath: remoteFileName };
     });
