@@ -37,7 +37,9 @@ export interface S3DiskConfig extends BaseDiskConfig {
     secret: string;
     region: string;
     bucket: string;
-    url: string;
+    endpoint: string;
+    public_url: string;
+    use_path_style: boolean;
 }
 
 interface BaseDiskConfig {

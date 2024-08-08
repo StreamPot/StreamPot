@@ -12,16 +12,23 @@ function createLocalDriver(config: LocalDiskConfig) {
 
 function createS3Driver(config: S3DiskConfig) {
     const client = new S3Client({
+        endpoint: config.endpoint,
         credentials: {
             accessKeyId: config.key,
             secretAccessKey: config.secret,
         },
         region: config.region,
+        forcePathStyle: config.use_path_style,
     });
 
     return new AwsS3StorageAdapter(client, {
-        bucket: '{your-bucket-name}',
-        prefix: '{optional-path-prefix}',
+        bucket: config.bucket,
+        publicUrlOptions: {
+            bucket: config.bucket,
+            region: config.region,
+            forcePathStyle: config.use_path_style,
+            baseUrl: `${config.public_url}/{uri}`,
+        },
     });
 }
 
