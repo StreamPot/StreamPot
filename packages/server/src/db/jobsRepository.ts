@@ -1,4 +1,5 @@
 import { Asset, JobEntity, JobEntityId, JobStatus, UnsavedJobEntity } from '../types'
+import { Metadata } from '../types/metadata';
 import getClient from "./db"
 
 export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
@@ -11,18 +12,24 @@ export async function addJob(data: UnsavedJobEntity): Promise<JobEntity> {
 }
 
 export async function markJobComplete(id: JobEntityId, assets: Asset[], output: string) {
+    let assetRecords: {id: number, name: string}[] = [];
+    
     if (assets.length !== 0) {
-        await getClient().query(
+        const result = await getClient().query(
             'INSERT INTO assets (job_id, name, stored_path, url) VALUES ' +
-            assets.map((_, i) => `($1, $${2 + i * 3}, $${3 + i * 3}, $${4 + i * 3})`).join(', '),
+            assets.map((_, i) => `($1, $${2 + i * 3}, $${3 + i * 3}, $${4 + i * 3})`).join(', ') +
+            ' RETURNING id, name',
             [id, ...assets.flatMap(asset => [asset.name, asset.storedPath, asset.url])]
         );
+        assetRecords = result.rows;
     }
 
-    return await getClient().query(
+    await getClient().query(
         'UPDATE jobs SET status = $1, completed_at = $2, logs = $3 WHERE id = $4',
         [JobStatus.Completed, new Date(), output, id]
     );
+
+    return assetRecords;
 }
 
 export async function markJobFailed(id: JobEntityId, output: string) {
@@ -75,4 +82,21 @@ export async function getAllJobs(): Promise<JobEntity[]> {
         ...job,
         outputs: assetsToOutputs(assets.rows.filter(asset => asset.job_id === job.id)),
     });
+}
+
+export async function saveMetadata(metadata: Metadata[]) {
+    const query = 'INSERT INTO metadata (type, ffprobe_json, asset_id, job_id, size) VALUES ' +
+        metadata.map((_, i) => 
+            `($${1 + i * 5}::text, $${2 + i * 5}::jsonb, $${3 + i * 5}::integer, $${4 + i * 5}::integer, $${5 + i * 5}::bigint)`
+        ).join(', ');
+    
+    const values = [...metadata.flatMap(meta => [
+        meta.type, 
+        JSON.stringify(meta.ffprobeJson), 
+        meta.assetId, 
+        meta.jobId, 
+        meta.size
+    ])];
+    
+    return getClient().query(query, values);
 }
