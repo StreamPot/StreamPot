@@ -16,7 +16,7 @@
     "scripts": {
         "build": "cross-env NODE_ENV=production tsup",
         "dev": "cross-env NODE_ENV=development tsup",
-        "start": "cross-env NODE_ENV=production dist/cli.js serve",
+        "start": "cross-env NODE_ENV=production dist/bin/streampot.js serve",
         "test": "vitest",
         "migrate": "node-pg-migrate"
     },
