@@ -15,7 +15,7 @@ export const tsup: Options = {
         "bin/streampot.ts",
         "src/index.ts",
     ],
-    watch: env === "development",
+    watch: env === "development" ? ['src'] : undefined,
     target: "node20",
     treeshake: true,
 };
