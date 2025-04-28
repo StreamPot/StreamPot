@@ -12,7 +12,7 @@ import {
     type FfmpegActionsRequestType
 } from './types'
 import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
-import { validateBearerToken } from '../auth'
+import { validateBearerToken } from './auth'
 
 const app = Fastify({
     logger: true
