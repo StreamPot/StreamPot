@@ -1,3 +1,5 @@
+import { config } from 'dotenv'
+config({ path: '.env' })
 import Fastify from 'fastify'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
@@ -10,10 +12,15 @@ import {
     type FfmpegActionsRequestType
 } from './types'
 import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
+import { validateBearerToken } from '../auth'
 
 const app = Fastify({
     logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
+
+if (process.env.API_KEY) {
+    app.addHook('preHandler', validateBearerToken)
+}
 
 app.post<{ Body: FfmpegActionsRequestType }>('/', {
     schema: {
