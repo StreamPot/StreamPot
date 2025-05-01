@@ -20,7 +20,6 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: postgres://postgres:example@db:5432/example
-      REDIS_CONNECTION_STRING: redis://redis:6379
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}
       S3_SECRET_KEY: ${S3_SECRET_KEY}
       S3_REGION: ${S3_REGION}
