@@ -13,12 +13,13 @@ import {
 } from './types'
 import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
 import { validateBearerToken } from './auth'
+import { shouldUseAPIKey } from './config'
 
 const app = Fastify({
     logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
 
-if (process.env.API_KEY) {
+if (shouldUseAPIKey()) {
     app.addHook('preHandler', validateBearerToken)
 }
 
