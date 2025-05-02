@@ -7,16 +7,16 @@
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
 ARG NODE_VERSION=20.10.0
-# ARG PNPM_VERSION=8.15.1
 
 FROM node:${NODE_VERSION}-alpine
 
 
+ARG PNPM_VERSION=9.12.3
 # Install pnpm.
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-RUN corepack prepare pnpm@8.15.1 --activate
+RUN corepack prepare pnpm@${PNPM_VERSION} --activate
 
 # Install ffmpeg.
 RUN apk add --no-cache ffmpeg
