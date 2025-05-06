@@ -7,6 +7,11 @@ export type StreamPotOptions = {
     baseUrl?: string;
 }
 
+type DeleteAssetsResponse = {
+    success: boolean;
+    deletedAssets: Record<string, string>[];
+}
+
 export default class StreamPot {
     protected secret: string;
     protected baseUrl: string;
@@ -38,6 +43,33 @@ export default class StreamPot {
         this.handleError(response)
 
         return new JobEntity(await response.json())
+    }
+
+    public async deleteAssets(options: {
+        jobId: number
+    }): Promise<DeleteAssetsResponse> {
+        const response = await fetch(`${this.baseUrl}/jobs/${options.jobId}/assets`, {
+            method: "DELETE",
+            headers: {
+                "Accept": "application/json",
+                Authorization: `Bearer ${this.secret}`
+            }
+        })
+
+        if (response.status === 204) {
+            return {
+                success: true,
+                deletedAssets: []
+            }
+        }
+
+        this.handleError(response)
+
+        const data = await response.json()
+        return {
+            success: true,
+            deletedAssets: data.deletedAssets
+        }
     }
 
     /**
