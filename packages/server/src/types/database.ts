@@ -37,7 +37,8 @@ export type JobMetadata = {
     output_bytes: number
     assets: {
         id: number | null,
-        name: string,
+        name: string | null,
+        size: number,
         type: 'input' | 'output',
         ffprobe: FFprobeResult
     }[]

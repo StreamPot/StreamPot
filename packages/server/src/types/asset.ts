@@ -8,9 +8,9 @@ export interface InputAsset extends BaseAsset {
     type: 'input'
 }
 export interface OutputAsset extends BaseAsset {
-    type: 'input' | 'output'
-    name: string | null
-    storedPath: string | null
+    type: 'output'
+    name: string
+    storedPath: string
 }
 
 export type Asset = InputAsset | OutputAsset

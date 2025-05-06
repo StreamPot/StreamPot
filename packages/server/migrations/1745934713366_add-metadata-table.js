@@ -14,6 +14,14 @@ exports.up = (pgm) => {
             type: 'serial',
             primaryKey: true
         },
+        input_bytes: {
+            type: 'bigint',
+            default: 0
+        },
+        output_bytes: {
+            type: 'bigint',
+            default: 0
+        },
         job_id: {
             type: 'integer',
             notNull: true,
@@ -73,7 +81,7 @@ exports.up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 exports.down = (pgm) => {
+    pgm.dropIndex('asset_metadata', ['job_id', 'type']);
     pgm.dropTable('asset_metadata');
     pgm.dropTable('job_metadata');
-    pgm.dropIndex('asset_metadata', ['job_id', 'type']);
 };

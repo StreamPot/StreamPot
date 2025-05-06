@@ -20,7 +20,6 @@ export default async function processWorkflow(job: JobEntity) {
 
         if (!outcome.success) {
             await jobsRepository.markJobFailed(job.id, outcome.output);
-            await deleteEnvironment(executionEnvironment);
             return;
         }
 

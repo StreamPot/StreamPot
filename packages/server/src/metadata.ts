@@ -7,7 +7,7 @@ export async function generateMetadata(job: JobEntity, assetsWithIds: SavedAsset
     await jobsRepository.setMetadata(metadata);
 }
 
-export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], startTime: number) {
+export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], startTime: number): Promise<JobMetadata> {
     const metadata: JobMetadata = {
         job_id: jobId,
         job_duration_ms: 0,
@@ -15,6 +15,7 @@ export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], star
         output_bytes: 0,
         assets: []
     };
+
     const assetPromises = assets.map(async (asset) => {
         const ffprobeResult = await executeFFProbe(asset.url);
         const sizeBytes = Number(ffprobeResult.format?.size || 0);
@@ -25,6 +26,7 @@ export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], star
                 id: asset.id,
                 name: null,
                 type: asset.type,
+                size: sizeBytes,
                 ffprobe: ffprobeResult
             });
         } else {
@@ -33,6 +35,7 @@ export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], star
                 id: asset.id,
                 name: asset.name,
                 type: asset.type,
+                size: sizeBytes,
                 ffprobe: ffprobeResult
             });
         }
