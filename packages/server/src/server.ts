@@ -1,6 +1,7 @@
 import { config } from 'dotenv'
 config({ path: '.env' })
 import Fastify from 'fastify'
+import sensible from '@fastify/sensible'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { videoQueue } from './queue'
 import {
@@ -9,14 +10,22 @@ import {
     QueueJob,
     Transformation,
     FfmpegActionsRequest,
-    type FfmpegActionsRequestType
+    type FfmpegActionsRequestType,
 } from './types'
+import {
+    JobNotFoundError,
+    DeletionError,
+    NoOutputsError
+} from './errors'
 import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
 import { validateBearerToken } from './auth'
+import { deleteFilesByJobId } from './storage'
 
 const app = Fastify({
     logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
+
+app.register(sensible)
 
 if (process.env.API_KEY) {
     app.addHook('preHandler', validateBearerToken)
@@ -58,4 +67,34 @@ app.get('/jobs', async () => {
     return await getAllJobs()
 })
 
+export type DeleteAssetsResponse = Array<{ key: string, url: string, filename: string }>;
+
+app.delete<{
+    Params: { jobId: JobEntityId },
+    Reply: {
+        200: { deletedAssets: DeleteAssetsResponse },
+        204: null,
+        404: { message: string },
+        500: { message: string }
+    }
+}>('/jobs/:jobId/assets', async (request, reply) => {
+    try {
+        const deletedKeys = await deleteFilesByJobId(request.params.jobId)
+        return reply.code(200).send({ deletedAssets: deletedKeys })
+    } catch (err) {
+        if (err instanceof JobNotFoundError) {
+            return reply.code(404).send({ message: err.message })
+        }
+        if (err instanceof NoOutputsError) {
+            return reply.code(204).send()
+        }
+        if (err instanceof DeletionError) {
+            request.log.error(err)
+            return reply.code(500).send({ message: err.message })
+        }
+
+        request.log.error(err)
+        return reply.code(500).send({ message: 'Internal Server Error' })
+    }
+})
 export default app

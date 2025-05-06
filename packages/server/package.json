@@ -24,6 +24,7 @@
         "@aws-sdk/client-s3": "^3.800.0",
         "@aws-sdk/s3-request-presigner": "^3.800.0",
         "@expo/spawn-async": "^1.7.2",
+        "@fastify/sensible": "^6.0.3",
         "@fastify/type-provider-typebox": "^5.1.0",
         "@sinclair/typebox": "^0.34.33",
         "bullmq": "^5.52.1",
