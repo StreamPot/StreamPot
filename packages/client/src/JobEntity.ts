@@ -7,9 +7,13 @@ type Outputs = Record<string, string>
 type JobMetadata = {
     job_duration_ms: number
     input_bytes: number
+    job_id: number
     output_bytes: number
     assets: {
-        name: string,
+        id: number
+        job_id: number
+        name: string | null
+        size_bytes: number
         type: 'input' | 'output',
         ffprobe: FFprobeResult
     }[]
