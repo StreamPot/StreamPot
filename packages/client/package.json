@@ -1,6 +1,6 @@
 {
     "name": "@streampot/client",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "author": "Jack Bridger",
     "license": "MIT",
     "main": "dist/index.js",
