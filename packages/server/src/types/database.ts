@@ -1,5 +1,4 @@
-import { FfmpegActionsRequestType } from "./transformations";
-import { Asset } from "./asset";
+import { FFprobeResult, FfmpegActionsRequestType } from "./";
 
 export type JobEntityId = number
 
@@ -7,7 +6,8 @@ export enum JobStatus {
     Pending = 'pending',
     Completed = 'completed',
     Failed = 'failed',
-    Uploading = 'uploading'
+    Uploading = 'uploading',
+    GeneratingMetadata = 'generating_metadata'
 }
 
 export enum Transformation {
@@ -28,4 +28,18 @@ export type JobEntity = UnsavedJobEntity & {
     created_at: Date,
     completed_at?: Date
     outputs?: Record<string, string> // record of assets name (user provided) and url (generated)
+}
+
+export type JobMetadata = {
+    job_id: number
+    job_duration_ms: number
+    input_bytes: number
+    output_bytes: number
+    assets: {
+        id: number | null,
+        name: string | null,
+        size: number,
+        type: 'input' | 'output',
+        ffprobe: FFprobeResult
+    }[]
 }

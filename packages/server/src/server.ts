@@ -19,6 +19,7 @@ import {
 } from './errors'
 import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
 import { validateBearerToken } from './auth'
+import { shouldUseAPIKey } from './config'
 import { deleteFilesByJobId } from './storage'
 
 const app = Fastify({
@@ -27,7 +28,7 @@ const app = Fastify({
 
 app.register(sensible)
 
-if (process.env.API_KEY) {
+if (shouldUseAPIKey()) {
     app.addHook('preHandler', validateBearerToken)
 }
 

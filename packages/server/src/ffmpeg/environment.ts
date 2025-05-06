@@ -1,4 +1,4 @@
-import { Asset } from "../types";
+import { OutputAsset } from "../types";
 import fs from "fs/promises";
 import { join } from "node:path";
 import { v4 as uuidv4 } from "uuid";
@@ -18,7 +18,7 @@ export async function createEnvironment() {
     };
 }
 
-export async function uploadEnvironment({ directory }: Environment): Promise<Asset[]> {
+export async function uploadAssets({ directory }: Environment): Promise<OutputAsset[]> {
     const files = await fs.readdir(directory);
 
     const uploadPromises = files.map(async (file) => {
@@ -29,7 +29,7 @@ export async function uploadEnvironment({ directory }: Environment): Promise<Ass
 
         const url = await getPublicUrl(remoteFileName)
 
-        return <Asset>{ name: file, url, storedPath: remoteFileName };
+        return <OutputAsset>{ name: file, url, storedPath: remoteFileName };
     });
 
     const assets = await Promise.all(uploadPromises);
