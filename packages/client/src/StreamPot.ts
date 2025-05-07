@@ -7,9 +7,20 @@ export type StreamPotOptions = {
     baseUrl?: string;
 }
 
+type Asset = {
+    id: number
+    job_id: number
+    deleted_at: string | null
+    created_at: string
+    type: 'output'
+    name: string
+    stored_path: string
+    url: string
+}
+
 type DeleteAssetsResponse = {
     success: boolean;
-    deletedAssets: Record<string, string>[];
+    deletedAssets: Asset[]
 }
 
 export default class StreamPot {

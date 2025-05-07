@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
 import { QueueJob } from "../types";
-import { getJobWithAssets } from "../db/jobsRepository";
+import { getJobWithAssets } from "../db";
 import processWorkflow from "../actions/processWorkflow";
 import connection from "./connection";
 

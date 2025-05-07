@@ -14,7 +14,8 @@ type JobMetadata = {
         job_id: number
         name: string | null
         size_bytes: number
-        type: 'input' | 'output',
+        type: 'input' | 'output'
+        deleted_at: string | null
         ffprobe: FFprobeResult
     }[]
 }

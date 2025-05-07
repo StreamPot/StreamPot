@@ -11,13 +11,14 @@ import {
     Transformation,
     FfmpegActionsRequest,
     type FfmpegActionsRequestType,
+    SavedOutputAsset,
 } from './types'
 import {
     JobNotFoundError,
     DeletionError,
     NoOutputsError
 } from './errors'
-import { addJob, getAllJobs, getJobWithAssets } from './db/jobsRepository'
+import { addJob, getAllJobs, getJobWithAssets } from './db'
 import { validateBearerToken } from './auth'
 import { shouldUseAPIKey } from './config'
 import { deleteFilesByJobId } from './storage'
@@ -73,7 +74,7 @@ export type DeleteAssetsResponse = Array<{ key: string, url: string, filename: s
 app.delete<{
     Params: { jobId: JobEntityId },
     Reply: {
-        200: { deletedAssets: DeleteAssetsResponse },
+        200: { deletedAssets: SavedOutputAsset[] },
         204: null,
         404: { message: string },
         500: { message: string }

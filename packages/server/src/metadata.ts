@@ -1,10 +1,10 @@
 import { executeFFProbe } from "./ffmpeg/ffprobe";
 import { JobEntity, SavedAsset, JobEntityId, JobMetadata } from "./types";
-import * as jobsRepository from './db/jobsRepository';
+import { setMetadata } from './db';
 
 export async function generateMetadata(job: JobEntity, assetsWithIds: SavedAsset[], startTime: number) {
     const metadata = await getMetadata(job.id, assetsWithIds, startTime);
-    await jobsRepository.setMetadata(metadata);
+    await setMetadata(metadata);
 }
 
 export async function getMetadata(jobId: JobEntityId, assets: SavedAsset[], startTime: number): Promise<JobMetadata> {
