@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
 import { JobEntityId, SavedOutputAsset } from './types';
-import { DeletionError, JobNotFoundError } from './errors';
+import { DeletionError, JobNotFoundError, NoOutputsError } from './errors';
 import { getAssetsByJobId, markAssetAsDeleted } from './db';
 
 
@@ -47,37 +47,43 @@ export async function getPublicUrl(key: string) {
 export async function deleteFilesByJobId(
     id: JobEntityId
 ): Promise<SavedOutputAsset[]> {
-    const assets = await getAssetsByJobId(id)
 
-    const assetsToDelete: SavedOutputAsset[] = assets.filter(asset => asset.type === 'output' && asset.deleted_at === null)
+    const assets = await getAssetsByJobId(id);
+    const assetsToDelete = assets.filter(a => a.type === 'output' && a.deleted_at === null);
 
     if (assetsToDelete.length === 0) {
-        throw new Error("No assets to delete")
+        throw new NoOutputsError(id);
     }
 
-    const assetDict: Record<string, SavedOutputAsset> = {}
+    const assetDict: Record<string, SavedOutputAsset> = {};
     for (const asset of assetsToDelete) {
-        assetDict[new URL(asset.url as string).pathname.slice(1)] = asset
+        assetDict[asset.storedPath] = asset;
     }
 
-    const command = new DeleteObjectsCommand({
+    const cmd = new DeleteObjectsCommand({
         Bucket: process.env.S3_BUCKET_NAME!,
         Delete: {
-            Objects: Object.keys(assetDict).map(key => ({ Key: key })),
+            Objects: Object.keys(assetDict).map(Key => ({ Key })),
             Quiet: false,
         },
-    })
-
-    const result = await getS3Client().send(command)
+    });
+    const result = await getS3Client().send(cmd);
 
     if (result.Errors && result.Errors.length > 0) {
-        const e = result.Errors[0]
-        throw new DeletionError(e.Key as string, new Error(e.Message))
+        const e = result.Errors[0];
+        throw new DeletionError(e.Key as string, new Error(e.Message));
     }
 
-    const s3ReportedDeletions = result.Deleted?.map(d => d.Key).filter(key => key != null) || [];[]
-    const validAssetsToDeleteFromDB = s3ReportedDeletions
-        .map(key => assetDict[key!])
-        .filter((asset): asset is SavedOutputAsset => asset !== undefined);
-    return Promise.all(validAssetsToDeleteFromDB.map(asset => markAssetAsDeleted(asset.id)));
+    const deletedKeys = (result.Deleted ?? [])
+        .map(d => d.Key)
+        .filter((k): k is string => Boolean(k));
+
+    const marked = await Promise.all(
+        deletedKeys
+            .map(key => assetDict[key])
+            .filter((asset): asset is SavedOutputAsset => asset !== undefined)
+            .map(asset => markAssetAsDeleted(asset.id))
+    );
+
+    return marked;
 }

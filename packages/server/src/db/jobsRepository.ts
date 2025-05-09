@@ -39,7 +39,10 @@ export async function getJobWithAssets(id: JobEntityId): Promise<JobEntity | nul
     if (jobRes.rows.length === 0) return null;
 
     const job = jobRes.rows[0];
-    const assets: OutputAsset[] = (await client.query("SELECT name, url FROM assets WHERE job_id = $1 AND type = 'output'", [id])).rows;
+    const assets: OutputAsset[] = (await client.query(
+        "SELECT name, url, stored_path as storedPath FROM assets WHERE job_id = $1 AND type = 'output' AND deleted_at IS NULL",
+        [id]
+    )).rows;
     const metadata = (await client.query('SELECT * FROM job_metadata WHERE job_id = $1', [id])).rows;
     const assetMetadata = (await client.query('SELECT * FROM asset_metadata WHERE job_id = $1', [id])).rows;
 
