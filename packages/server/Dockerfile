@@ -29,12 +29,11 @@ ARG CACHE_ID=cache-pnpm-store
 # Debug: Print the cache ID being used
 RUN echo "Using CACHE_ID: ${CACHE_ID}"
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.local/share/pnpm/store to speed up subsequent builds.
-# Leverage a bind mounts to package.json and pnpm-lock.yaml to avoid having to copy them into
-# into this layer.
-# RUN --mount=type=bind,source=package.json,target=package.json \
-#     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+# Copy package files first to leverage Docker's build cache
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the source files into the image.
 COPY . .
