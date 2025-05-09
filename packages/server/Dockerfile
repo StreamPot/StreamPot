@@ -24,7 +24,8 @@ RUN apk add --no-cache ffmpeg
 WORKDIR /usr/src/app
 
 # Define cache ID as a build argument with default value
-ARG CACHE_ID=pnpm-store
+ARG CACHE_ID=cache-pnpm-store
+
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.local/share/pnpm/store to speed up subsequent builds.
