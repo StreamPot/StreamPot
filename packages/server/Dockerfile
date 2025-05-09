@@ -23,13 +23,16 @@ RUN apk add --no-cache ffmpeg
 
 WORKDIR /usr/src/app
 
+# Define cache ID as a build argument with default value
+ARG CACHE_ID=pnpm-store
+
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.local/share/pnpm/store to speed up subsequent builds.
 # Leverage a bind mounts to package.json and pnpm-lock.yaml to avoid having to copy them into
 # into this layer.
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
-    --mount=type=cache,target=/pnpm/store \
+    --mount=type=cache,id=${CACHE_ID},target=/pnpm/store \
     pnpm install --frozen-lockfile
 
 # Copy the rest of the source files into the image.
