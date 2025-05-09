@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
-import { JobEntityId, DeleteAssetsResponse } from './types';
+import { JobEntityId, SavedOutputAsset } from './types';
 import { DeletionError, JobNotFoundError, NoOutputsError } from './errors';
-import { getJobWithAssets } from './db/jobsRepository';
+import { getAssetsByJobId, markAssetAsDeleted } from './db';
+
 
 let s3Client: S3Client | null = null;
 
@@ -45,46 +46,44 @@ export async function getPublicUrl(key: string) {
 
 export async function deleteFilesByJobId(
     id: JobEntityId
-): Promise<DeleteAssetsResponse> {
-    const job = await getJobWithAssets(id)
-    if (!job) throw new JobNotFoundError(id)
+): Promise<SavedOutputAsset[]> {
 
-    const fileMap = new Map<string, { filename: string, url: string }>();
+    const assets = await getAssetsByJobId(id);
+    const assetsToDelete = assets.filter(a => a.type === 'output' && a.deleted_at === null);
 
-    if (!job.outputs || Object.keys(job.outputs).length === 0) {
-        throw new NoOutputsError(id)
+    if (assetsToDelete.length === 0) {
+        throw new NoOutputsError(id);
     }
 
-    for (const [filename, url] of Object.entries(job.outputs)) {
-        const key = new URL(url as string).pathname.slice(1);
-        fileMap.set(key, { filename, url: url as string });
+    const assetDict: Record<string, SavedOutputAsset> = {};
+    for (const asset of assetsToDelete) {
+        assetDict[asset.storedPath] = asset;
     }
 
-    const keys = Array.from(fileMap.keys());
-
-    const command = new DeleteObjectsCommand({
+    const cmd = new DeleteObjectsCommand({
         Bucket: process.env.S3_BUCKET_NAME!,
         Delete: {
-            Objects: keys.map(Key => ({ Key })),
+            Objects: Object.keys(assetDict).map(Key => ({ Key })),
             Quiet: false,
         },
-    })
-
-    const result = await getS3Client().send(command)
-    const deleted = result.Deleted?.map(d => {
-        const key = d.Key as string;
-        const details = fileMap.get(key)!;
-        return {
-            key,
-            filename: details.filename,
-            url: details.url
-        };
-    }) || []
+    });
+    const result = await getS3Client().send(cmd);
 
     if (result.Errors && result.Errors.length > 0) {
-        const e = result.Errors[0]
-        throw new DeletionError(e.Key as string, new Error(e.Message))
+        const e = result.Errors[0];
+        throw new DeletionError(e.Key as string, new Error(e.Message));
     }
 
-    return deleted
+    const deletedKeys = (result.Deleted ?? [])
+        .map(d => d.Key)
+        .filter((k): k is string => Boolean(k));
+
+    const marked = await Promise.all(
+        deletedKeys
+            .map(key => assetDict[key])
+            .filter((asset): asset is SavedOutputAsset => asset !== undefined)
+            .map(asset => markAssetAsDeleted(asset.id))
+    );
+
+    return marked;
 }

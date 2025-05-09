@@ -2,7 +2,7 @@ import { executeWorkflow, WorkflowAction } from "../ffmpeg/workflow";
 import { shouldCollectAssetMetadata } from "../config";
 import { generateMetadata } from "../metadata";
 import { JobEntity, JobStatus } from "../types";
-import * as jobsRepository from "../db/jobsRepository";
+import { markJobComplete, markJobFailed, updateJobStatus, addAssets } from "../db";
 import {
     deleteEnvironment,
     createEnvironment,
@@ -19,23 +19,23 @@ export default async function processWorkflow(job: JobEntity) {
         const outcome = await executeWorkflow(workflow, executionEnvironment);
 
         if (!outcome.success) {
-            await jobsRepository.markJobFailed(job.id, outcome.output);
+            await markJobFailed(job.id, outcome.output);
             return;
         }
 
-        await jobsRepository.updateJobStatus(job.id, JobStatus.Uploading);
+        await updateJobStatus(job.id, JobStatus.Uploading);
 
         const assets = await uploadAssets(executionEnvironment);
-        const savedAssets = (await jobsRepository.addAssets(job, assets))
+        const savedAssets = (await addAssets(job, assets))
 
         if (shouldCollectAssetMetadata()) {
-            await jobsRepository.updateJobStatus(job.id, JobStatus.GeneratingMetadata);
+            await updateJobStatus(job.id, JobStatus.GeneratingMetadata);
             await generateMetadata(job, savedAssets, startTime);
         }
 
-        await jobsRepository.markJobComplete(job.id, outcome.output);
+        await markJobComplete(job.id, outcome.output);
     } catch (error) {
-        await jobsRepository.updateJobStatus(job.id, JobStatus.Failed);
+        await updateJobStatus(job.id, JobStatus.Failed);
         throw error;
     } finally {
         await deleteEnvironment(executionEnvironment);
