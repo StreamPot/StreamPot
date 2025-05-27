@@ -73,7 +73,7 @@ export async function getAllJobs(): Promise<JobEntity[]> {
         assets
     ] = await Promise.all([
         client.query('SELECT * FROM jobs'),
-        client.query('SELECT * FROM assets')
+        client.query("SELECT * FROM assets WHERE type = 'output' AND deleted_at IS NULL")
     ])
 
     return jobs.rows.map(job => <JobEntity>{
