@@ -1,36 +1,40 @@
-import fluentFfmpeg, { FfmpegCommand } from 'fluent-ffmpeg'
+import fluentFfmpeg, { FfmpegCommand } from "fluent-ffmpeg";
 import { executeDocker, executeLocal, ExecutionOutcome } from "./execution";
-import methodList from './fluent-ffmpeg-methods.json' assert { type: 'json' };
+import methodList from "./fluent-ffmpeg-methods.json" assert { type: "json" };
 import { Environment } from "./environment";
-import { shouldUseDockerForFFmpeg } from '../config';
-import { ensureInputsAreAccesible } from './validation';
+import { shouldUseDockerForFFmpeg } from "../config";
+import { ensureInputsAreAccesible } from "./validation";
 
-/**
- * A list of allowed methods that can be called on the ffmpeg instance.
- */
 const methods = methodList as (keyof FfmpegCommand)[];
 
 export interface WorkflowAction {
-    name: string,
-    value: string[]
+    name: string;
+    value: string[];
 }
 
-/**
- * Uses fluent-ffmpeg to build the ffmpeg arguments array from a workflow.
- */
 export function toCommandArguments(actions: WorkflowAction[]): string[] {
-    const ffmpegInstance = fluentFfmpeg()
+    const ffmpegInstance = fluentFfmpeg();
 
     for (const action of actions) {
         if ((methods as string[]).includes(action.name)) {
-            ffmpegInstance[action.name](...action.value)
+            try {
+                // @ts-expect-error
+                ffmpegInstance[action.name](...action.value);
+            } catch (err) {
+                throw new Error(`Failed to apply FFmpeg method '${action.name}': ${(err as Error).message}`);
+            }
+        } else {
+            throw new Error(`Invalid FFmpeg method: '${action.name}'`);
         }
     }
 
-    return ['-hide_banner', '-v', 'error', ...ffmpegInstance._getArguments()];
+    return ["-hide_banner", "-v", "error", ...ffmpegInstance._getArguments()];
 }
 
-export async function executeWorkflow(actions: WorkflowAction[], environment: Environment): Promise<ExecutionOutcome> {
+export async function executeWorkflow(
+    actions: WorkflowAction[],
+    environment: Environment
+): Promise<ExecutionOutcome> {
     await ensureInputsAreAccesible(actions);
 
     const ffmpegArguments = toCommandArguments(actions);

@@ -1,22 +1,19 @@
-import { Queue } from "bullmq";
+import { Queue, QueueOptions } from "bullmq";
 import connection from "./connection";
 
-const queueOptions: any = {
+const queueOptions: QueueOptions = {
     connection,
 };
 
-const QUEUE_CLEANUP_MS = process.env.QUEUE_CLEANUP_MS ? Number(process.env.QUEUE_CLEANUP_MS) : undefined;
+const QUEUE_CLEANUP_MS = process.env.QUEUE_CLEANUP_MS
+    ? Number(process.env.QUEUE_CLEANUP_MS)
+    : undefined;
 
-if (QUEUE_CLEANUP_MS) {
-    const cleanupAgeSeconds = Math.floor(QUEUE_CLEANUP_MS / 1000);
-
+if (!Number.isNaN(QUEUE_CLEANUP_MS) && QUEUE_CLEANUP_MS) {
+    const age = Math.floor(QUEUE_CLEANUP_MS / 1000);
     queueOptions.defaultJobOptions = {
-        removeOnComplete: {
-            age: cleanupAgeSeconds,
-        },
-        removeOnFail: {
-            age: cleanupAgeSeconds,
-        }
+        removeOnComplete: { age },
+        removeOnFail: { age },
     };
 }
 
