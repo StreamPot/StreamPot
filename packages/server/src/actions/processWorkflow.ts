@@ -35,8 +35,8 @@ export default async function processWorkflow(job: JobEntity) {
 
         await markJobComplete(job.id, outcome.output);
     } catch (error) {
-        await updateJobStatus(job.id, JobStatus.Failed);
-        throw error;
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        await markJobFailed(job.id, errorMessage);
     } finally {
         await deleteEnvironment(executionEnvironment);
     }

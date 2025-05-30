@@ -3,6 +3,7 @@ import { executeDocker, executeLocal, ExecutionOutcome } from "./execution";
 import methodList from './fluent-ffmpeg-methods.json' assert { type: 'json' };
 import { Environment } from "./environment";
 import { shouldUseDockerForFFmpeg } from '../config';
+import { ensureInputsAreAccesible } from './validation';
 
 /**
  * A list of allowed methods that can be called on the ffmpeg instance.
@@ -30,6 +31,8 @@ export function toCommandArguments(actions: WorkflowAction[]): string[] {
 }
 
 export async function executeWorkflow(actions: WorkflowAction[], environment: Environment): Promise<ExecutionOutcome> {
+    await ensureInputsAreAccesible(actions);
+
     const ffmpegArguments = toCommandArguments(actions);
 
     if (shouldUseDockerForFFmpeg()) {
@@ -38,4 +41,3 @@ export async function executeWorkflow(actions: WorkflowAction[], environment: En
 
     return await executeLocal({ ffmpegArguments, path: environment.directory });
 }
-
